@@ -22,11 +22,19 @@ public class AppTest {
     public void testweapon(){
         Weapon xtra = new Weapon("qwerty", 201);
         assertEquals(201, xtra.get_attack());
+        
     }
     
     @Test
     public void testartifact(){
         Artifact xtra = new Weapon("qwerty", 201);
         assertEquals(201, xtra.get_stats());
+    }
+
+    @Test
+    public void makechar(){
+            GameCharacter winner = new Hero("winner", "bread winner");
+            assertTrue(true);
+            assertEquals(winner.get_name(), "winner");
     }
 }
