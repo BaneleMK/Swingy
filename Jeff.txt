@@ -1,0 +1,10 @@
+Name:Jeff
+Class: Viking
+Level: 3
+XP: 150 / 4800
+Hitpoints: 47
+Attack: 9
+defense: 0
+Weapon: LV 1 Stick of Truth + 4 ATK
+Armor: N/A
+Helm: LV 2 helm of Truth + 7 HP

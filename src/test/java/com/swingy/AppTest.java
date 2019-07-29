@@ -20,14 +20,14 @@ public class AppTest {
 
     @Test
     public void testweapon(){
-        Weapon xtra = new Weapon("qwerty", 201);
+        Weapon xtra = new Weapon("qwerty", 201, 1);
         assertEquals(201, xtra.get_attack());
         
     }
     
     @Test
     public void testartifact(){
-        Artifact xtra = new Weapon("qwerty", 201);
+        Artifact xtra = new Weapon("qwerty", 201, 1);
         assertEquals(201, xtra.get_stats());
     }
 
@@ -36,5 +36,13 @@ public class AppTest {
             GameCharacter winner = new Hero("winner", "bread winner");
             assertTrue(true);
             assertEquals(winner.get_name(), "winner");
+
+
+    }
+
+    @Test
+    public void makearray(){
+
+            
     }
 }

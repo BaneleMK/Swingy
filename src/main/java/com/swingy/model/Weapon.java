@@ -4,11 +4,14 @@ public class Weapon implements Artifact{
 
     private String _name;
     private int _attack;
+    private String _type = "Weapon";
+    private int _level;
 
-    public Weapon(String name, int attack){
+    public Weapon(String name, int attack, int level){
         this._name = name;
-        this._attack = attack;
-        System.out.println("weapon "+_name+" made with "+_attack+" attack points");
+        this._attack = attack * (level + 1) / 2;
+        this._level = level;
+        System.out.println("lv "+_level+" weapon "+_name+" made with "+_attack+" attack points");
     }
 
     /**
@@ -16,6 +19,20 @@ public class Weapon implements Artifact{
      */
     public String get_name(){
         return _name;
+    }
+
+     /**
+     * @return the type
+     */
+    public String get_type() {
+        return _type;
+    }
+
+    /**
+     * @return the _level
+     */
+    public int get_level() {
+        return _level;
     }
 
     /**

@@ -5,6 +5,7 @@ import com.swingy.model.Hero;
 import com.swingy.model.Map;
 import com.swingy.view.GameView;
 
+
 public final class Swingy {
     private Swingy() {
     }

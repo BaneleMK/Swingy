@@ -1,13 +1,16 @@
 package com.swingy.model;
 
-class Helm implements Artifact {
+public class Helm implements Artifact {
     private String _name;
     private int _hitpoints;
+    private String _type = "Helm";
+    private int _level;
 
-    Helm(String name, int hitpoints){
+    Helm(String name, int hitpoints, int level){
         this._name = name;
-        this._hitpoints = hitpoints;
-        System.out.println("armor "+_name+" made with "+_hitpoints+" hp");
+        this._hitpoints = hitpoints * (level + 1) / 2;;
+        System.out.println("helm "+_name+" made with "+_hitpoints+" hp");
+        this._level = level;
     }
 
     /**
@@ -16,6 +19,19 @@ class Helm implements Artifact {
     public String get_name(){
         return _name;
     }
+
+    @Override
+    public String get_type() {
+        return _type;
+    }
+
+    /**
+     * @return the _level
+     */
+    public int get_level() {
+        return _level;
+    }
+    
     
     /**
      * @return the _hitpoints

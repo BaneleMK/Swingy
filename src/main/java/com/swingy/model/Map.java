@@ -124,6 +124,6 @@ public class Map {
                 }
             }   
         }
-        System.out.println("Hero "+map[_hero_ylocation][_hero_xlocation][1].get_name()+" with "+map[_hero_ylocation][_hero_xlocation][1].get_attack()+"is ready to fight");
+        System.out.println("Hero "+map[_hero_ylocation][_hero_xlocation][1].get_name()+" is ready to fight");
     }
 }

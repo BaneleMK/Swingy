@@ -1,13 +1,16 @@
 package com.swingy.model;
 
-class Armor implements Artifact {
+public class Armor implements Artifact {
     private String _name;
     private int _defense;
+    private String _type = "Armor";
+    private int _level;
 
-    Armor(String name, int defense){
+    Armor(String name, int defense, int level){
         this._name = name;
-        this._defense = defense;
+        this._defense = defense * (level + 1) / 2;
         System.out.println("armor "+_name+" made with "+_defense+" defence points");
+        this._level = level;
     }
 
     /**
@@ -15,6 +18,20 @@ class Armor implements Artifact {
      */
     public String get_name(){
         return _name;
+    }
+
+    /**
+     * @return the _level
+     */
+    public int get_level() {
+        return _level;
+    }
+
+    /**
+     * @return the type
+     */
+    public String get_type() {
+        return _type;
     }
 
     /**

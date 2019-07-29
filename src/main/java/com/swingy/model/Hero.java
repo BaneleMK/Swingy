@@ -3,9 +3,9 @@ package com.swingy.model;
 public class Hero extends GameCharacter {
     private int _experience;
     private Weapon _weapon = null;
-    private Armor _Armor = null;
+    private Armor _armor = null;
     private Helm _helm = null;
-    protected int _xp_to_next_lv;
+    protected int _xp_to_next_lv = (_level*1000+((_level - 1)*(_level - 1))*450);
 
     public Hero(String name, String char_class){
         super(name, char_class);
@@ -35,17 +35,52 @@ public class Hero extends GameCharacter {
     @Override
     public int get_defense() {
         // return (super.get_defense() + _Armor.get_stats());
-        if (_Armor != null)
-            return (_defense + _Armor.get_stats());
+        if (_armor != null)
+            return (_defense + _armor.get_stats());
         else
             return _defense;
     }
 
     /**
-     * @param _Armor the _Armor to set
+     * @return the _weapon
      */
-    public void set_Armor(Armor _Armor) {
-        this._Armor = _Armor;
+    public Weapon get_weapon() {
+        return _weapon;
+    }
+
+    /**
+     * @return the _armor
+     */
+    public Armor get_armor() {
+        return _armor;
+    }
+
+    /**
+     * @return the _helm
+     */
+    public Helm get_helm() {
+        return _helm;
+    }
+
+    /**
+     * @return the _experience
+     */
+    public int get_experience() {
+        return _experience;
+    }
+
+    /**
+     * @return the _xp_to_next_lv
+     */
+    public int get_xp_to_next_lv() {
+        return _xp_to_next_lv;
+    }
+
+    /**
+     * @param _armor the _Armor to set
+     */
+    public void set_armor(Armor _Armor) {
+        this._armor = _Armor;
     }
 
     /**
