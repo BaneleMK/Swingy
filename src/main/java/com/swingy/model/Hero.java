@@ -12,7 +12,6 @@ public class Hero extends GameCharacter {
         this._hitpoints = 40;
     }
 
-
     // i can remove the supers and retain the behavior since its all public
 
     @Override
@@ -39,6 +38,18 @@ public class Hero extends GameCharacter {
             return (_defense + _armor.get_stats());
         else
             return _defense;
+    }
+
+    public void set_hitpoints(int _hitpoints){
+        this._hitpoints = _hitpoints;
+    }
+
+    public void set_attack(int _attack){
+        this._attack = _attack;
+    }
+
+    public void set_defense(int _defense){
+        this._defense = _defense;
     }
 
     /**
@@ -76,6 +87,10 @@ public class Hero extends GameCharacter {
         return _xp_to_next_lv;
     }
 
+    public void set_level(int _level){
+        this._level = _level;
+    }
+
     /**
      * @param _armor the _Armor to set
      */
@@ -95,6 +110,20 @@ public class Hero extends GameCharacter {
      */
     public void set_helm(Helm _helm) {
         this._helm = _helm;
+    }
+
+    /**
+     * @param _experience the _experience to set
+     */
+    public void set_experience(int _experience) {
+        this._experience = _experience;
+    }
+
+    /**
+     * @param _xp_to_next_lv the _xp_to_next_lv to set
+     */
+    public void set_xp_to_next_lv(int _xp_to_next_lv) {
+        this._xp_to_next_lv = _xp_to_next_lv;
     }
 
     public void getxp(int xp){

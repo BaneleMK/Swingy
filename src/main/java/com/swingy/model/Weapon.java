@@ -11,7 +11,7 @@ public class Weapon implements Artifact{
         this._name = name;
         this._attack = attack * (level + 1) / 2;
         this._level = level;
-        System.out.println("lv "+_level+" weapon "+_name+" made with "+_attack+" attack points");
+        //System.out.println("lv "+_level+" weapon "+_name+" made with "+_attack+" attack points");
     }
 
     /**

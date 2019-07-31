@@ -6,10 +6,10 @@ public class Helm implements Artifact {
     private String _type = "Helm";
     private int _level;
 
-    Helm(String name, int hitpoints, int level){
+    public Helm(String name, int hitpoints, int level){
         this._name = name;
         this._hitpoints = hitpoints * (level + 1) / 2;;
-        System.out.println("helm "+_name+" made with "+_hitpoints+" hp");
+        //System.out.println("helm "+_name+" made with "+_hitpoints+" hp");
         this._level = level;
     }
 

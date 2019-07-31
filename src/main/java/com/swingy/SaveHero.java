@@ -23,7 +23,7 @@ public class SaveHero {
 
     static public void openfile(String name){
         try {
-            savefile = new PrintWriter(name+".txt");
+            savefile = new PrintWriter("src/main/java/com/swingy/model/heroes/"+name+".txt");
         } catch (Exception e) {
             System.out.println("File conflict error: "+ e.getMessage());
         }

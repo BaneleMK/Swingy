@@ -117,13 +117,14 @@ public class Map {
                 // check if a villain randomly spawns and if the max amount of mobs is not reached for the player level.
                 if (rand.nextBoolean() == true && rand.nextBoolean() == true && currentmobs < maxmobs){
                     if (map[y][x][1] != hero){
-                        System.out.println("Making Villain");
                         map[y][x][0] = Villainmaker.makevillain(hero);
                         currentmobs++;
                     }
                 }
             }   
         }
+        System.out.println("Villains made");
+
         System.out.println("Hero "+map[_hero_ylocation][_hero_xlocation][1].get_name()+" is ready to fight");
     }
 }

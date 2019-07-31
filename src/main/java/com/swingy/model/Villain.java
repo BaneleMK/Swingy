@@ -14,7 +14,7 @@ public class Villain extends GameCharacter {
         this._maxhitpoints *= hero_level / 2;
         this._hitpoints *= hero_level / 2; 
         this._carried_Artifact = LootTable.genArtifact(this._level);
-        System.out.println("New Villain "+this._name+" msade of class "+this._class+" lv "+this._level);        
+        //System.out.println("New Villain "+this._name+" msade of class "+this._class+" lv "+this._level);        
     }
 
 }

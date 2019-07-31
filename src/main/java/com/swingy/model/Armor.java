@@ -6,10 +6,10 @@ public class Armor implements Artifact {
     private String _type = "Armor";
     private int _level;
 
-    Armor(String name, int defense, int level){
+    public Armor(String name, int defense, int level){
         this._name = name;
         this._defense = defense * (level + 1) / 2;
-        System.out.println("armor "+_name+" made with "+_defense+" defence points");
+        //System.out.println("armor "+_name+" made with "+_defense+" defence points");
         this._level = level;
     }
 

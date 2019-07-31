@@ -1,5 +1,7 @@
 package com.swingy.controller;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -31,8 +33,27 @@ public class GameEngine{
         gameview.rendermap(map.getMap(), map.get_mapsize());
     }
 
+    private static int takedamage(int hp, int defense, int damage){
+        if (damage > defense){
+            return hp + (defense - damage);
+        }
+        return hp;
+    }
+
     private static int startfight(Hero hero, Villain villain) {
-        if (hero.get_attack() > villain.get_attack()) {
+        int herohp = hero.get_hitpoints();
+        int villainhp = villain.get_hitpoints();
+        
+        while(true){
+            villainhp = takedamage(villainhp, villain.get_defense(), hero.get_attack());
+            if(villainhp <= 0)
+                break;
+            herohp = takedamage(herohp, hero.get_defense(), villain.get_attack());
+            if(herohp <=0 )
+                break;
+        }
+
+        if(villainhp <= 0){
             return 1;
         } else {
             return 0;
@@ -120,7 +141,7 @@ public class GameEngine{
                     }
                     int xpgained = villain.get_level() * 200;
                     map.killvillain();
-                    System.out.println("You won the FIGHT! you have gained "+ANSI_GREEN+xpgained+ANSI_RESET+"XP");
+                    System.out.println("You won the FIGHT! you have gained "+ANSI_GREEN+xpgained+ANSI_RESET+" XP");
                     hero.getxp(xpgained);
                 } else if (fight == 0) {
                     //map.killhero();
@@ -161,11 +182,96 @@ public class GameEngine{
 
     }
 
+    public static void loadhero(Map map){
+        int line = 1;
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("src/main/java/com/swingy/model/heroes/Jeff.txt"));
+            String name = br.readLine().split(" ")[1];
+            line++;
+            String char_class = br.readLine().split(" ")[1];
+            line++;
+
+            Hero loaded_hero = new Hero(name, char_class);
+            line++;
+            loaded_hero.set_level(Integer.parseInt(br.readLine().split(" ")[1]));
+
+            String xpline = br.readLine();
+
+            line++;
+            loaded_hero.set_experience(Integer.parseInt(xpline.split(" ")[1]));
+            loaded_hero.set_xp_to_next_lv(Integer.parseInt(xpline.split(" ")[3]));
+            line++;
+
+            loaded_hero.set_hitpoints(Integer.parseInt(br.readLine().split(" ")[1]));
+            line++;
+
+            loaded_hero.set_attack(Integer.parseInt(br.readLine().split(" ")[1]));
+            line++;
+
+            loaded_hero.set_defense(Integer.parseInt(br.readLine().split(" ")[1]));
+            line++;
+
+
+            System.out.println("loading weapon");
+            String weaponline = br.readLine();
+
+            if (!weaponline.split(" ")[1].equals("N/A")){
+                System.out.println("weapon "+ weaponline.split(" ")[3] +" found");            
+                for(int i = 0; i < LootTable.getWeaponnames().length; i++){
+                    String weapon1 = LootTable.getWeaponnames()[i];
+                    String weapon2 = weaponline.split(" ")[3];
+                    System.out.println("lootable weapon: "+weapon1+" =? "+ weapon2);
+                    if (weapon1.equals(weapon2)){
+                        System.out.println("weapon equiped");
+                        loaded_hero.set_weapon(new Weapon(LootTable.getWeaponnames()[i], LootTable.getWeapondamages()[i], Integer.parseInt(weaponline.split(" ")[2])));
+                        break;
+                    }
+                }
+            }
+            line++;
+            String armorline = br.readLine();
+
+            if (!armorline.split(" ")[1].equals("N/A")){
+                for(int i = 0; i < LootTable.getArmornames().length; i++){
+                    String armor1 = LootTable.getArmornames()[i];
+                    String armor2 = armorline.split(" ")[3];
+                    System.out.println("lootable armor: "+armor1+" =? "+ armor2);
+                    if (armor1.equals(armor2)){
+                        loaded_hero.set_armor(new Armor(LootTable.getArmornames()[i], LootTable.getArmordefense()[i], Integer.parseInt(armorline.split(" ")[2])));
+                        break;
+                    }
+                }
+            }
+
+
+            line++;
+            String helmline = br.readLine();
+
+            if (!helmline.split(" ")[1].equals("N/A")){
+                System.out.println("helm "+ weaponline +" found");            
+                for(int i = 0; i < LootTable.getHelmnames().length; i++){
+                    String helm1 = LootTable.getHelmnames()[i];
+                    String helm2 = helmline.split(" ")[3];
+                    System.out.println("lootable helm: "+helm1+" =? "+ helm2);
+                    if (helm1.equals(helm2)){
+                        loaded_hero.set_helm(new Helm(LootTable.getHelmnames()[i], LootTable.getHelmhitpoints()[i], Integer.parseInt(helmline.split(" ")[2])));
+                        break;
+                    }
+                }
+            }
+            map.generatenewmap(loaded_hero);
+            br.close();
+        } catch (Exception e){
+            System.out.println("error at line " + line +": "+ e.getMessage());
+        }
+        
+    }
+
     public static void rungame(GameView gameview, Map map){
         updatemapview(gameview, map);
         while (game){
             
-            System.out.println("Available commands: MAP, MOVE, HERO, CLEAR, SAVE AND QUIT");
+            System.out.println("Available commands: MAP, MOVE, HERO, CLEAR, SAVE, LOAD AND QUIT");
             switch (gameinput.nextLine().toUpperCase()) {
                 case "MAP":
                     updatemapview(gameview, map);
@@ -187,6 +293,9 @@ public class GameEngine{
                     break;
                 case "SAVE":
                     savehero((Hero)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][1]);
+                    break;
+                case "LOAD":
+                    loadhero(map);
                     break;
                 default:
                     System.out.println("Invalid command");
