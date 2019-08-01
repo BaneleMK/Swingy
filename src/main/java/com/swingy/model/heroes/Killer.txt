@@ -1,0 +1,10 @@
+Name: Killer
+Class: Biju
+Level: 2
+XP: 200 / 2450
+Hitpoints: 40
+Attack: 20
+defense: 0
+Weapon: LV 1 Daedric_blade + 15 ATK
+Armor: N/A
+Helm: N/A

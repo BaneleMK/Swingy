@@ -1,0 +1,10 @@
+Name: Wattson
+Class: Static_defender
+Level: 3
+XP: 1550 / 4800
+Hitpoints: 62
+Attack: 9
+defense: 13
+Weapon: LV 1 Stick_of_Truth + 4 ATK
+Armor: LV 2 Daedric_armor + 13 DEF
+Helm: LV 2 Daedric_helm + 22 HP

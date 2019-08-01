@@ -2,6 +2,7 @@ package com.swingy.controller;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.File;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -144,8 +145,10 @@ public class GameEngine{
                     System.out.println("You won the FIGHT! you have gained "+ANSI_GREEN+xpgained+ANSI_RESET+" XP");
                     hero.getxp(xpgained);
                 } else if (fight == 0) {
-                    //map.killhero();
-                    System.out.println("YOU DIED");                                
+                    int xplost = hero.get_experience() / 2;
+                    System.out.println("YOU DIED | you lost "+ xplost +" xp");
+                    hero.set_experience(xplost);
+                    map.generatenewmap(hero);
                 }
             }
         } if (map.get_Hero_xlocation() == 0 || map.get_Hero_xlocation() == (map.get_mapsize() - 1) || map.get_Hero_ylocation() == 0 || map.get_Hero_ylocation() == (map.get_mapsize() - 1)){
@@ -182,96 +185,178 @@ public class GameEngine{
 
     }
 
-    public static void loadhero(Map map){
+    public static Hero loadhero(Map map){
         int line = 1;
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("src/main/java/com/swingy/model/heroes/Jeff.txt"));
-            String name = br.readLine().split(" ")[1];
-            line++;
-            String char_class = br.readLine().split(" ")[1];
-            line++;
+        File file = new File("src/main/java/com/swingy/model/heroes/");
+        String filenames[] = file.list();
+        if (filenames.length != 0){
+            for(int i = 0; i < filenames.length ; i++){
+                System.out.println(i+" - "+filenames[i]);
+            }
+            boolean character_selected = false;
+            int selected = 0;
+            try {
+            while (character_selected == false){
+                if ((selected = Integer.parseInt(gameinput.nextLine())) <= (filenames.length - 1)) {
+                
+                    BufferedReader br = new BufferedReader(new FileReader("src/main/java/com/swingy/model/heroes/"+filenames[selected]));
+                    String name = br.readLine().split(" ")[1];
+                    line++;
+                    String char_class = br.readLine().split(" ")[1];
+                    line++;
 
-            Hero loaded_hero = new Hero(name, char_class);
-            line++;
-            loaded_hero.set_level(Integer.parseInt(br.readLine().split(" ")[1]));
+                    Hero loaded_hero = new Hero(name, char_class);
+                    line++;
+                    loaded_hero.set_level(Integer.parseInt(br.readLine().split(" ")[1]));
 
-            String xpline = br.readLine();
+                    String xpline = br.readLine();
 
-            line++;
-            loaded_hero.set_experience(Integer.parseInt(xpline.split(" ")[1]));
-            loaded_hero.set_xp_to_next_lv(Integer.parseInt(xpline.split(" ")[3]));
-            line++;
+                    line++;
+                    loaded_hero.set_experience(Integer.parseInt(xpline.split(" ")[1]));
+                    loaded_hero.set_xp_to_next_lv(Integer.parseInt(xpline.split(" ")[3]));
+                    line++;
 
-            loaded_hero.set_hitpoints(Integer.parseInt(br.readLine().split(" ")[1]));
-            line++;
+                    loaded_hero.set_hitpoints(Integer.parseInt(br.readLine().split(" ")[1]));
+                    line++;
 
-            loaded_hero.set_attack(Integer.parseInt(br.readLine().split(" ")[1]));
-            line++;
+                    loaded_hero.set_attack(Integer.parseInt(br.readLine().split(" ")[1]));
+                    line++;
 
-            loaded_hero.set_defense(Integer.parseInt(br.readLine().split(" ")[1]));
-            line++;
+                    loaded_hero.set_defense(Integer.parseInt(br.readLine().split(" ")[1]));
+                    line++;
 
 
-            System.out.println("loading weapon");
-            String weaponline = br.readLine();
+                    String weaponline = br.readLine();
 
-            if (!weaponline.split(" ")[1].equals("N/A")){
-                System.out.println("weapon "+ weaponline.split(" ")[3] +" found");            
-                for(int i = 0; i < LootTable.getWeaponnames().length; i++){
-                    String weapon1 = LootTable.getWeaponnames()[i];
-                    String weapon2 = weaponline.split(" ")[3];
-                    System.out.println("lootable weapon: "+weapon1+" =? "+ weapon2);
-                    if (weapon1.equals(weapon2)){
-                        System.out.println("weapon equiped");
-                        loaded_hero.set_weapon(new Weapon(LootTable.getWeaponnames()[i], LootTable.getWeapondamages()[i], Integer.parseInt(weaponline.split(" ")[2])));
-                        break;
+                    if (!weaponline.split(" ")[1].equals("N/A")){
+                        for(int i = 0; i < LootTable.getWeaponnames().length; i++){
+                            String weapon1 = LootTable.getWeaponnames()[i];
+                            String weapon2 = weaponline.split(" ")[3];
+                            if (weapon1.equals(weapon2)){
+                                loaded_hero.set_weapon(new Weapon(LootTable.getWeaponnames()[i], LootTable.getWeapondamages()[i], Integer.parseInt(weaponline.split(" ")[2])));
+                                break;
+                            }
+                        }
                     }
+                    line++;
+                    String armorline = br.readLine();
+                
+                    if (!armorline.split(" ")[1].equals("N/A")){
+                        for(int i = 0; i < LootTable.getArmornames().length; i++){
+                            String armor1 = LootTable.getArmornames()[i];
+                            String armor2 = armorline.split(" ")[3];
+                            if (armor1.equals(armor2)){
+                                loaded_hero.set_armor(new Armor(LootTable.getArmornames()[i], LootTable.getArmordefense()[i], Integer.parseInt(armorline.split(" ")[2])));
+                                break;
+                            }
+                        }
+                    }
+                
+                
+                    line++;
+                    String helmline = br.readLine();
+                
+                    if (!helmline.split(" ")[1].equals("N/A")){
+                        for(int i = 0; i < LootTable.getHelmnames().length; i++){
+                            String helm1 = LootTable.getHelmnames()[i];
+                            String helm2 = helmline.split(" ")[3];
+                            if (helm1.equals(helm2)){
+                                loaded_hero.set_helm(new Helm(LootTable.getHelmnames()[i], LootTable.getHelmhitpoints()[i], Integer.parseInt(helmline.split(" ")[2])));
+                                break;
+                            }
+                        }
+                    }
+                    br.close();
+                    character_selected = true;
+                    return loaded_hero;
+                } else{
+                    System.out.println("Selection is out of bound");
                 }
             }
-            line++;
-            String armorline = br.readLine();
 
-            if (!armorline.split(" ")[1].equals("N/A")){
-                for(int i = 0; i < LootTable.getArmornames().length; i++){
-                    String armor1 = LootTable.getArmornames()[i];
-                    String armor2 = armorline.split(" ")[3];
-                    System.out.println("lootable armor: "+armor1+" =? "+ armor2);
-                    if (armor1.equals(armor2)){
-                        loaded_hero.set_armor(new Armor(LootTable.getArmornames()[i], LootTable.getArmordefense()[i], Integer.parseInt(armorline.split(" ")[2])));
-                        break;
-                    }
+            } catch (Exception e){
+                System.out.println("error at line " + line +": "+ e.getMessage());
+            }
+        } else {
+            System.out.println("No saved heroes would you like to make a new one or continue with current if available");
+            System.out.println("Available commands: CONTINUE and NEW_HERO");
+            boolean select = false;
+            while (select == false){
+                switch (gameinput.nextLine().toUpperCase()) {
+                    case "NEW_HERO":
+                        return makeHero();
+                    case "CONTINUE":
+                        return null;
                 }
             }
-
-
-            line++;
-            String helmline = br.readLine();
-
-            if (!helmline.split(" ")[1].equals("N/A")){
-                System.out.println("helm "+ weaponline +" found");            
-                for(int i = 0; i < LootTable.getHelmnames().length; i++){
-                    String helm1 = LootTable.getHelmnames()[i];
-                    String helm2 = helmline.split(" ")[3];
-                    System.out.println("lootable helm: "+helm1+" =? "+ helm2);
-                    if (helm1.equals(helm2)){
-                        loaded_hero.set_helm(new Helm(LootTable.getHelmnames()[i], LootTable.getHelmhitpoints()[i], Integer.parseInt(helmline.split(" ")[2])));
-                        break;
-                    }
-                }
-            }
-            map.generatenewmap(loaded_hero);
-            br.close();
-        } catch (Exception e){
-            System.out.println("error at line " + line +": "+ e.getMessage());
         }
-        
+        return null;
     }
 
-    public static void rungame(GameView gameview, Map map){
+    public static Hero makeHero(){
+        String name = null;
+        String char_class = null;
+        while (name == "" || name == null){
+            System.out.println("[NAME YOUR HERO]");
+            name = gameinput.nextLine();
+            if (name.contains(" ")){
+                System.out.println("[HERO NAMES DONT HAVE SPACES INSIDE]");
+                name = null;
+            } else if (name.equals("Rodger")){
+                System.out.println(ANSI_PURPLE+"RODGER IS MY HERO"+ANSI_RESET);
+            } else if (name.equals("Shroud")){
+                System.out.println(ANSI_PURPLE+"THE KING OF REDDIT"+ANSI_RESET);
+            } else if (name.equals("null")){
+                System.out.println(ANSI_RED+"haha, not funny. no really this almost broke it, do it again and do it right"+ANSI_RESET);
+                name = null;
+            }
+
+        }
+        while (char_class == "" || char_class == null){
+            System.out.println("[GIVE YOUR HERO A CLASS]");
+            char_class = gameinput.nextLine();
+            if (char_class.contains(" ")){
+                System.out.println("[HERO CLASSES NAMES DONT HAVE SPACES INSIDE]");
+                char_class = null;
+            }
+        }
+        return new Hero(name, char_class);
+    }
+
+    public static void makeorloadhero(){
+        boolean select = false;
+        Hero hero = null;
+        Map gamemap = new Map();
+        GameView gameview = new GameView();
+        while (select == false)
+        {
+            System.out.println("Available commands: NEW_HERO and LOAD_HERO");
+            switch (gameinput.nextLine().toUpperCase()) {
+                case "NEW_HERO":
+                    hero = makeHero();
+                    select = true;
+                    break;
+                case "LOAD_HERO":
+                    hero = loadhero(gamemap);
+                    if (hero == null){
+                        System.out.println("It seems like you dont have a hero, you need a hero to go on adventures friend. Let us make one.");
+                        hero = makeHero();
+                    }
+                    select = true;
+                    break;
+                default:
+                    System.out.println("invalid command");
+            }
+        }
+        rungame(gameview, gamemap, hero);;
+    }
+
+    public static void rungame(GameView gameview, Map map, Hero hero){
+        map.generatenewmap(hero);
         updatemapview(gameview, map);
         while (game){
             
-            System.out.println("Available commands: MAP, MOVE, HERO, CLEAR, SAVE, LOAD AND QUIT");
+            System.out.println("Available commands: MAP, MOVE, HERO, CLEAR, SAVE, LOAD, NEW_HERO AND QUIT");
             switch (gameinput.nextLine().toUpperCase()) {
                 case "MAP":
                     updatemapview(gameview, map);
@@ -295,7 +380,14 @@ public class GameEngine{
                     savehero((Hero)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][1]);
                     break;
                 case "LOAD":
-                    loadhero(map);
+                    Hero temphero = loadhero(map);
+                    if (temphero != null){
+                        map.generatenewmap(temphero);
+                        temphero = null;
+                    }
+                    break;
+                case "NEW_HERO":
+                    map.generatenewmap(makeHero());
                     break;
                 default:
                     System.out.println("Invalid command");
