@@ -117,7 +117,7 @@ public class Map {
                 // check if a villain randomly spawns and if the max amount of mobs is not reached for the player level.
                 if (rand.nextBoolean() == true && rand.nextBoolean() == true && currentmobs < maxmobs){
                     if (map[y][x][1] != hero){
-                        map[y][x][0] = Villainmaker.makevillain(hero);
+                        map[y][x][0] = LootTable.genVillain(hero.get_level());
                         currentmobs++;
                     }
                 }

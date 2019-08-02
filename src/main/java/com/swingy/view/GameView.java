@@ -72,4 +72,13 @@ public class GameView{
         hero_armor(hero);
         hero_helm(hero);
     }
+
+    public void villain_stats(Villain villain){
+        System.out.println("Name: "+villain.get_name()
+        +"\nClass: "+villain.get_class()
+        +"\nLevel: "+villain.get_level()
+        +"\nHitpoints: "+villain.get_hitpoints()
+        +"\nAttack: "+villain.get_attack()
+        +"\ndefense: "+villain.get_defense());
+    }
 }

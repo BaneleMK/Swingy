@@ -1,0 +1,10 @@
+Name: me
+Class: you
+Level: 2
+XP: 600 / 2450
+Hitpoints: 55
+Attack: 20
+defense: 0
+Weapon: LV 2 Stark_Blade + 15 ATK
+Armor: N/A
+Helm: LV 1 Daedric_helm + 15 HP

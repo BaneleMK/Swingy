@@ -53,7 +53,7 @@ public class GameEngine{
             if(herohp <=0 )
                 break;
         }
-
+        hero.set_lastfighthp(herohp);
         if(villainhp <= 0){
             return 1;
         } else {
@@ -65,7 +65,9 @@ public class GameEngine{
         Villain villain = (Villain)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][0];
         Hero hero = (Hero)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][1];
         if (villain != null && hero != null){
-            System.out.println("A WILD "+villain.get_name()+" APPEARS . do you ["+hero.get_name()+"] FIGHT OR RUN?");
+            System.out.println(ANSI_RED+"A WILD LV "+villain.get_level()+" "+villain.get_class()+" "+villain.get_name()+" APPEARS. do you FIGHT OR RUN?"+ANSI_RESET);
+            System.out.println(ANSI_PURPLE+"Available commands: FIGHT, RUN, HERO STATS and VILLAIN STATS"+ANSI_RESET);
+            
             boolean conflict = true;
             while (conflict){
                 int fight = 2;
@@ -84,10 +86,16 @@ public class GameEngine{
                             System.out.println("turns out you ran away just fine");
                             map.ranaway();
                         } else {
-                            System.out.println("Your attempt to RUN away FAILED. Now you have to FIGHT!");
+                            System.out.println(ANSI_RED+"Your attempt to RUN away FAILED. Now you have to FIGHT!"+ANSI_RESET);
                             fight = startfight(hero, villain);
                         }
                         conflict = false;
+                        break;
+                    case "VILLAIN STATS":
+                        gameView.villain_stats(villain);
+                        break;
+                    case "HERO STATS":
+                        gameView.hero_stats((Hero)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][1]);
                         break;
                     default:
                         System.out.println("Are you sure you didnt want to fight? ... or run?!");
@@ -103,7 +111,7 @@ public class GameEngine{
                                 System.out.println(villain.get_name()+
                                 " has dropped a level "+ANSI_GREEN+villain.give_artifact().get_level()+ANSI_RESET+" "+villain.give_artifact().get_type()+" "+villain.give_artifact().get_name()+
                                 " with the stats "+ANSI_GREEN+villain.give_artifact().get_stats()+ANSI_RESET+
-                                "\nWould you like to USE, COMPARE or LEAVE it?");
+                                "\n"+ANSI_PURPLE+"Available commands: to USE, COMPARE or LEAVE"+ANSI_RESET);
                                 switch(gameinput.nextLine().toUpperCase()){
                                     case "USE":
                                         switch(villain.give_artifact().get_type()){
@@ -142,11 +150,11 @@ public class GameEngine{
                     }
                     int xpgained = villain.get_level() * 200;
                     map.killvillain();
-                    System.out.println("You won the FIGHT! you have gained "+ANSI_GREEN+xpgained+ANSI_RESET+" XP");
+                    System.out.println(ANSI_YELLOW+"You won the FIGHT with "+ANSI_GREEN+hero.get_lastfighthp()+" / "+hero.get_hitpoints()+ANSI_YELLOW+" hp remaining! you have gained "+ANSI_GREEN+xpgained+ANSI_YELLOW+" XP"+ANSI_RESET);
                     hero.getxp(xpgained);
                 } else if (fight == 0) {
                     int xplost = hero.get_experience() / 2;
-                    System.out.println("YOU DIED | you lost "+ xplost +" xp");
+                    System.out.println(ANSI_RED+"YOU DIED | you lost "+ xplost +" xp"+ANSI_RESET);
                     hero.set_experience(xplost);
                     map.generatenewmap(hero);
                 }
@@ -279,7 +287,7 @@ public class GameEngine{
             }
         } else {
             System.out.println("No saved heroes would you like to make a new one or continue with current if available");
-            System.out.println("Available commands: CONTINUE and NEW_HERO");
+            System.out.println(ANSI_PURPLE+"Available commands: CONTINUE and NEW_HERO"+ANSI_RESET);
             boolean select = false;
             while (select == false){
                 switch (gameinput.nextLine().toUpperCase()) {
@@ -330,13 +338,13 @@ public class GameEngine{
         GameView gameview = new GameView();
         while (select == false)
         {
-            System.out.println("Available commands: NEW_HERO and LOAD_HERO");
+            System.out.println(ANSI_PURPLE+"Available commands: NEW HERO and LOAD HERO"+ANSI_RESET);
             switch (gameinput.nextLine().toUpperCase()) {
-                case "NEW_HERO":
+                case "NEW HERO":
                     hero = makeHero();
                     select = true;
                     break;
-                case "LOAD_HERO":
+                case "LOAD HERO":
                     hero = loadhero(gamemap);
                     if (hero == null){
                         System.out.println("It seems like you dont have a hero, you need a hero to go on adventures friend. Let us make one.");
@@ -356,7 +364,7 @@ public class GameEngine{
         updatemapview(gameview, map);
         while (game){
             
-            System.out.println("Available commands: MAP, MOVE, HERO, CLEAR, SAVE, LOAD, NEW_HERO AND QUIT");
+            System.out.println(ANSI_PURPLE+"Available commands: MAP, MOVE, HERO, CLEAR, SAVE, LOAD, NEW_HERO AND QUIT"+ANSI_RESET);
             switch (gameinput.nextLine().toUpperCase()) {
                 case "MAP":
                     updatemapview(gameview, map);
@@ -378,6 +386,7 @@ public class GameEngine{
                     break;
                 case "SAVE":
                     savehero((Hero)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][1]);
+                    System.out.println("Hero "+hero.get_name()+" saved");
                     break;
                 case "LOAD":
                     Hero temphero = loadhero(map);

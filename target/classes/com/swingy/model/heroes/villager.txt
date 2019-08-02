@@ -1,0 +1,10 @@
+Name: villager
+Class: pillager
+Level: 2
+XP: 0 / 2450
+Hitpoints: 45
+Attack: 20
+defense: 4
+Weapon: LV 1 Daedric_blade + 15 ATK
+Armor: LV 1 Armor_of_Truth + 4 DEF
+Helm: LV 1 Helm_of_Truth + 5 HP

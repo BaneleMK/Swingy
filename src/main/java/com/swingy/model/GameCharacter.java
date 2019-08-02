@@ -80,14 +80,6 @@ public abstract class GameCharacter{
     }
 }
 
-class Villainmaker{
-    public static GameCharacter makevillain(GameCharacter hero){
-        // do stuff and get a villain a less or a bit stronger then the hero.
-        //System.out.println("Making new lv "+hero.get_level()+" Villain");        
-        return new Villain("skummy", "slime", hero.get_level());
-    }
-
-}
 
 
 

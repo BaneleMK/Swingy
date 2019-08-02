@@ -6,6 +6,7 @@ public class Hero extends GameCharacter {
     private Armor _armor = null;
     private Helm _helm = null;
     protected int _xp_to_next_lv = (_level*1000+((_level - 1)*(_level - 1))*450);
+    private int _lastfighthp = 0;
 
     public Hero(String name, String char_class){
         super(name, char_class);
@@ -39,6 +40,21 @@ public class Hero extends GameCharacter {
         else
             return _defense;
     }
+
+    /**
+     * @return the _lastfighthp
+     */
+    public int get_lastfighthp() {
+        return _lastfighthp;
+    }
+
+    /**
+     * @param _lastfighthp the _lastfighthp to set
+     */
+    public void set_lastfighthp(int _lastfighthp) {
+        this._lastfighthp = _lastfighthp;
+    }
+
 
     public void set_hitpoints(int _hitpoints){
         this._hitpoints = _hitpoints;

@@ -73,4 +73,31 @@ public class LootTable{
                 return null;
         }
     }
+
+    static String villainnames[] = {"Skumwam", "Skhumba", "Smoother", "Cooler", "Charmer", "Bowser", "Pain", "TK", "Norm", "Caustic", "Jiren"};
+    static String villainclass[] = {"Slime", "Zombie", "Boss_monster"};
+    static int villaindamages[] = { 2, 4, 15};
+    static int villainhitpoints[] = { 10, 2, 45};
+    static int villaindefense[] = { 0, 1, 15};
+
+    static Villain genVillain(int level){
+        Random rand = new Random();
+        int class_number = rand.nextInt(3);
+        int chosen_level = level;
+
+        switch (rand.nextInt(2)) {
+            case 0:
+                chosen_level += rand.nextInt(2);               
+                break;
+            case 1:
+                chosen_level -= rand.nextInt(2);
+                if (chosen_level <= 0)
+                    chosen_level = 1;
+                break;
+        }
+
+
+        return new Villain(LootTable.villainnames[rand.nextInt(LootTable.villainnames.length)], LootTable.villainclass[class_number], chosen_level,
+        LootTable.villaindamages[class_number], LootTable.villainhitpoints[class_number], LootTable.villaindefense[class_number]);
+    }
 }
