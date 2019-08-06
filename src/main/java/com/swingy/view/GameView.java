@@ -18,6 +18,10 @@ public class GameView{
         System.out.println("--- LET THE GAME BEGIN ---");
     }
 
+    public static void consolelog(String message){
+        System.out.println(message);
+    }
+
     public void rendermap(GameCharacter[][][] map, int mapsize){
         for(int y = 0; y<mapsize; y++){
             for(int x = 0; x<mapsize; x++){

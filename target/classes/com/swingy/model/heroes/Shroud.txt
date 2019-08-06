@@ -1,10 +1,10 @@
 Name: Shroud
 Class: Gamer
 Level: 1
-XP: 0 / 1000
-Hitpoints: 40
+XP: 200 / 1000
+Hitpoints: 45
 Attack: 5
 defense: 0
 Weapon: N/A
 Armor: N/A
-Helm: N/A
+Helm: LV 1 Helm_of_Truth + 5 HP

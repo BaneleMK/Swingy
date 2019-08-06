@@ -25,7 +25,6 @@ public class Hero extends GameCharacter {
 
     @Override
     public int get_hitpoints() {
-//        return (super.get_hitpoints() + _helm.get_stats());
         if (_helm != null)
             return (_hitpoints + _helm.get_hitpoints());
         else
@@ -34,7 +33,6 @@ public class Hero extends GameCharacter {
 
     @Override
     public int get_defense() {
-        // return (super.get_defense() + _Armor.get_stats());
         if (_armor != null)
             return (_defense + _armor.get_stats());
         else
@@ -142,18 +140,16 @@ public class Hero extends GameCharacter {
         this._xp_to_next_lv = _xp_to_next_lv;
     }
 
-    public void getxp(int xp){
+    public boolean getxp(int xp){
         _experience += xp;
-        checklevelup();
-    }
-
-    public void checklevelup(){
         _xp_to_next_lv = (_level*1000+((_level - 1)*(_level - 1))*450);
         if (_experience >= _xp_to_next_lv){
             _experience -= _xp_to_next_lv;
             _level++;
             _xp_to_next_lv = (_level*1000+((_level - 1)*(_level - 1))*450);
-            System.out.println("YOU LEVELED UP TO LV "+_level+"!");
+            return true;
         }
+        return false;
     }
+
 }

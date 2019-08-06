@@ -7,7 +7,7 @@ public class LootTable{
     static int weapondamages[] = { 10, 4, 15};
 
     static String armornames[] = {"Stark_armor", "Armor_of_Truth", "Daedric_armor"};
-    static int armordefense[] = { 7, 4, 9};
+    static int armordefense[] = { 3, 2, 5};
 
     static String helmnames[] = {"Stark_helm", "Helm_of_Truth", "Daedric_helm"};
     static int helmhitpoints[] = { 10, 5, 15};

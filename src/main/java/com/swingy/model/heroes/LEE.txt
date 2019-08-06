@@ -1,8 +1,8 @@
 Name: LEE
 Class: Taijutsu_Ninja
 Level: 3
-XP: 3150 / 4800
-Hitpoints: 77
+XP: 3750 / 4800
+Hitpoints: 107
 Attack: 100
 defense: 5
 Weapon: N/A

@@ -11,6 +11,16 @@ public final class Swingy {
      * @param args The arguments of the program.
      */
     public static void main(String[] args) {
-        GameEngine.makeorloadhero();
+        if (args.length == 1){
+            if (args[0].equals("console"))
+                GameEngine.makeorloadhero();
+            else if (args[0].equals("gui"))
+                System.out.println("WIP");
+            else {
+                System.out.println("invalid view mode");
+            }
+        } else {
+            System.out.println("Run with one argument either 'console' or 'gui' as argument for view method");
+        }
     }
 }
