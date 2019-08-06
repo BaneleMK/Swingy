@@ -1,6 +1,7 @@
 package com.swingy;
 
 import com.swingy.controller.GameEngine;
+import com.swingy.view.*;
 
 
 public final class Swingy {
@@ -15,7 +16,7 @@ public final class Swingy {
             if (args[0].equals("console"))
                 GameEngine.makeorloadhero();
             else if (args[0].equals("gui"))
-                System.out.println("WIP");
+                GameGuiView.makewindow();
             else {
                 System.out.println("invalid view mode");
             }
