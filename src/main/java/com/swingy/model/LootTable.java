@@ -77,7 +77,7 @@ public class LootTable{
     static String villainnames[] = {"Skumwam", "Skhumba", "Smoother", "Cooler", "Charmer", "Bowser", "Pain", "TK", "Norm", "Caustic", "Jiren"};
     static String villainclass[] = {"Slime", "Zombie", "Boss_monster"};
     static int villaindamages[] = { 2, 4, 15};
-    static int villainhitpoints[] = { 10, 2, 45};
+    static int villainhitpoints[] = { 15, 20, 55};
     static int villaindefense[] = { 0, 1, 15};
 
     static Villain genVillain(int level){

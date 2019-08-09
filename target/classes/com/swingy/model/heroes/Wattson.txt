@@ -1,10 +1,10 @@
 Name: Wattson
 Class: Static_defender
 Level: 4
-XP: 5350 / 8050
-Hitpoints: 92
-Attack: 54
-defense: 35
+XP: 7550 / 8050
+Hitpoints: 152
+Attack: 144
+defense: 59
 Weapon: LV 5 Daedric_blade + 45 ATK
-Armor: LV 4 Daedric_armor + 22 DEF
+Armor: LV 4 Daedric_armor + 12 DEF
 Helm: LV 3 Daedric_helm + 30 HP

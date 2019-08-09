@@ -2,7 +2,7 @@ package com.swingy.view;
 
 import com.swingy.model.*;
 
-public class GameView{
+public class GameView implements View{
 
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
@@ -18,7 +18,8 @@ public class GameView{
         System.out.println("--- LET THE GAME BEGIN ---");
     }
 
-    public static void consolelog(String message){
+    @Override
+    public void consolelog(String message){
         System.out.println(message);
     }
 
