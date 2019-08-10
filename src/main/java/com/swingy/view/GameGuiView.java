@@ -5,7 +5,6 @@ package com.swingy.view;
 
 import java.awt.event.*;
 import java.io.File;
-import java.util.ArrayList;
 import java.awt.*;
 
 import javax.swing.*;
@@ -33,6 +32,8 @@ public class GameGuiView implements View{
     static JLabel loadlable = new JLabel("");        
     static JButton submitButtonload= new JButton("submit");
     static JList<String> heroeslist = new JList<String>();
+    static JPanel jPanelload = new JPanel();
+    static int heroes_saves = 0;
 
     public GameGuiView(){
 
@@ -99,70 +100,89 @@ public class GameGuiView implements View{
 
     static public void loadhero(){
         // dialoge box (load hero)
-        loadheroDialog.setLayout(new FlowLayout());
         // dialog size
-        loadheroDialog.setSize(480, 150);
+        loadheroDialog.setSize(700, 500);
+        loadheroDialog.getContentPane().add(heroeslist);
+
+        // check if hero selected and load
+        DefaultListModel<String> list = new DefaultListModel<String>();
+        File file = new File("src/main/java/com/swingy/model/heroes/");
+        String filenames[] = file.list();
+        if (filenames.length != heroes_saves){
+            heroes_saves = filenames.length;
+            for(int i = 0; i < filenames.length ; i++){
+                list.addElement(i+" - "+filenames[i]);
+                // System.out.println(list.get(i));
+            }
+            heroeslist = new JList<>(list);
+        } else if (filenames.length == 0) {
+            System.out.println("HELLO NO HEROES IN THIS WORLD");
+        } else {
+            System.out.println("SELECT SOMETHING PLEASE");
+        }
+
         submitButtonload.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
-                // check if hero selected and load
-                ArrayList<String> list = new ArrayList<String>();
-                File file = new File("src/main/java/com/swingy/model/heroes/");
-                String filenames[] = file.list();
-                if (filenames.length != 0){
-                    for(int i = 0; i < filenames.length ; i++){
-                        list.add(i+" - "+filenames[i]);
+                public void actionPerformed(ActionEvent e){
+                    try {
+                        if (heroeslist.getSelectedValue().equals("") || heroeslist.getSelectedValue().equals(null)){
+                            loadlable.setText("[A QUEST WIHOUT A HERO? no...PLEASE CHOOSE A HERO]");
+                            System.out.println("op = A");
+                        } else {
+                            loadheroDialog.setVisible(false);
+                            System.out.println("op = B "+heroeslist.getSelectedValue()+" - "+null);
+                        }
+                        System.out.println("op = C");    
+                    } catch(NullPointerException exception){
+                        System.out.println("op = A");
+                        loadlable.setText("[A QUEST WIHOUT A HERO? no...PLEASE CHOOSE A HERO]");
+                    } catch (Exception exception) {
+                        System.out.println("op = A");
+                        System.out.println("big boo boo");
                     }
-                    String[] heroes;
-                    for (int i = 0; i < list.size ; i++){
-                        heroes[i] = (String)list.get(i);
-                    }
-                    heroeslist = new JList(heroes);
-                    if (heroeslist.getSelectedValue().equals("")){
-                        classlable.setText("[A QUEST WIHOUT A HERO? no...PLEASE CHOOSE A HERO]");
-                    } else {
-                        heroclassDialog.setVisible(false);
-                    }
-                } else {
-                    // HAVE A MAIN LABEL THAT POPS UP AND SAYS NO HEROES SAVED
-                }
+                    
             }
         });
         loadheroDialog.add(submitButtonload);
         loadheroDialog.add(heroeslist);
+        loadheroDialog.add(loadlable);
+        loadheroDialog.setLayout(new FlowLayout());
     }
 
     static public void makewindow(){
-        
-        
         heroclassDialog.setVisible(false);
         newherodDialog.setVisible(false);
 
-        //button for new hero
-        btnewhero.setBounds(10, 10, 100, 20);
-        bloadhero.setBounds(10, 40, 100, 20);        
-        //button pops up dialog box for hero name
-        btnewhero.addActionListener(new ActionListener(){
+        JMenuBar gameoptions = new JMenuBar();
+        JMenu game = new JMenu("game");
+        JMenuItem newgame,loadgame;
+
+        newgame = new JMenuItem("New Game");
+        loadgame = new JMenuItem("Load Game");
+
+        newgame.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 newherodDialog.setVisible(true);
                 newhero();
             }
         });
 
-        bloadhero.addActionListener(new ActionListener(){
+        loadgame.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 loadheroDialog.setVisible(true);
                 loadhero();
             }
         });
-        //adds button to frame
-        frame.add(btnewhero);
-        frame.add(bloadhero);
+
+        game.add(newgame);
+        game.add(loadgame);
+        gameoptions.add(game);
+        frame.setJMenuBar(gameoptions);
 
         // setting close operation
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   
-        // sets 500 width and 600 height 
-        frame.setSize(300, 200);
+        // sets 800 width and 800 height 
+        frame.setSize(800, 800);
           
         // uses no layout managers 
         frame.setLayout(null);
