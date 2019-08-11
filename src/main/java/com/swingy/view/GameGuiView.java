@@ -190,6 +190,12 @@ public class GameGuiView implements View{
         // makes the frame visible 
         frame.setVisible(true);
 
+        JTextArea guiconsole = new JTextArea();
+        guiconsole.setBounds(10, 10, 300, 700);
+        guiconsole.setEditable(false);
+        guiconsole.setBackground(Color.GREEN);
+        frame.add(guiconsole);
+
         //--------------------LOAD HERO------------------//
 
 
