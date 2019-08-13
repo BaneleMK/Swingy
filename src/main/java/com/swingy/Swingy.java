@@ -13,11 +13,14 @@ public final class Swingy {
      */
     public static void main(String[] args) {
         if (args.length == 1){
-            if (args[0].equals("console"))
-                GameEngine.makeorloadhero();
-            else if (args[0].equals("gui"))
+            GameEngine gameEngine;
+            if (args[0].equals("console")){
+                gameEngine = new GameEngine();
+                gameEngine.makeorloadhero();
+            } else if (args[0].equals("gui")){
+                GameGuiView GameGuiView = new GameGuiView();
                 GameGuiView.makewindow();
-            else {
+            } else {
                 System.out.println("invalid view mode");
             }
         } else {

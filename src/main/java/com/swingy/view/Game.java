@@ -1,9 +1,6 @@
 package com.swingy.view;
 
-/**
- * View
- */
-public interface View {
+public interface Game {
 
     public void consolelog(String message);
 }

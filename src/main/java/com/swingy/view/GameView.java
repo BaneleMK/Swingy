@@ -2,7 +2,7 @@ package com.swingy.view;
 
 import com.swingy.model.*;
 
-public class GameView implements View{
+public class GameView implements Game{
 
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";

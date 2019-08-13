@@ -34,18 +34,18 @@ public class GameEngine{
     static boolean game = true;
 
 
-    private static void updatemapview(GameView gameview, Map map){
+    private  void updatemapview(GameView gameview, Map map){
         gameview.rendermap(map.getMap(), map.get_mapsize());
     }
 
-    private static int takedamage(int hp, int defense, int damage){
+    private  int takedamage(int hp, int defense, int damage){
         if (damage > defense){
             return hp + (defense - damage);
         }
         return hp;
     }
 
-    private static int startfight(Hero hero, Villain villain) {
+    private  int startfight(Hero hero, Villain villain) {
         int herohp = hero.get_hitpoints();
         int villainhp = villain.get_hitpoints();
         
@@ -65,7 +65,7 @@ public class GameEngine{
         }
     }
 
-    private static void checkevent(Map map, GameView gameview){
+    private  void checkevent(Map map, GameView gameview){
         Villain villain = (Villain)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][0];
         Hero hero = (Hero)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][1];
         if (villain != null && hero != null){
@@ -171,7 +171,7 @@ public class GameEngine{
         }
     }
 
-    public static void savehero(Hero hero){
+    public  void savehero(Hero hero){
         SaveHero.openfile(hero.get_name());
         SaveHero.put("Name: "+hero.get_name()
         +"\nClass: "+hero.get_class()
@@ -199,7 +199,7 @@ public class GameEngine{
 
     }
 
-    public static Hero loadhero(Map map, GameView gameview){
+    public  Hero loadhero(Map map, GameView gameview){
         int line = 1;
         File file = new File("src/main/java/com/swingy/model/heroes/");
         String filenames[] = file.list();
@@ -307,7 +307,7 @@ public class GameEngine{
         return null;
     }
 
-    public static Hero makeHero(GameView gameview){
+    public Hero makeHero(GameView gameview){
         @Size(min = 4, max = 20, message = "Heroes have names with 1 - 20 characters") String name = null;
         String tempname = null;
         String char_class = null;
@@ -339,7 +339,7 @@ public class GameEngine{
         return new Hero(name, char_class);
     }
 
-    public static void makeorloadhero(){
+    public void makeorloadhero(){
         boolean select = false;
         Hero hero = null;
         Map gamemap = new Map();
@@ -367,7 +367,7 @@ public class GameEngine{
         rungame(gameview, gamemap, hero);;
     }
 
-    public static void rungame(GameView gameview, Map map, Hero hero){
+    public void rungame(GameView gameview, Map map, Hero hero){
         map.generatenewmap(hero);
         updatemapview(gameview, map);
         while (game){

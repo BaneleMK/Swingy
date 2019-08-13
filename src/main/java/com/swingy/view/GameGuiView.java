@@ -9,17 +9,14 @@ import java.awt.*;
 
 import javax.swing.*;
 
-public class GameGuiView implements View{
+public class GameGuiView implements Game{
     static private JFrame frame = new JFrame("Swingy");
 
     static JButton btnewhero = new JButton("New Hero");
     static JButton bloadhero = new JButton("Load Hero");
     // new hero name diobox
 
-    static JDialog newherodDialog = new JDialog(frame, "New Hero");
-    static JLabel namelable = new JLabel("");        
-    static JButton submitButtonname= new JButton("submit");
-    static JTextField nametextfield = new JTextField("enter hero name" ,20);
+    
     // new hero class diobox
 
     static JDialog heroclassDialog = new JDialog(frame, "New Hero");
@@ -43,18 +40,20 @@ public class GameGuiView implements View{
         // add some text to some elements
     }
 
-    static public void newhero(){
+    public void newhero(JDialog newherodDialog){
         // ----------------NEW HERO------------------------ //
-        newheroname();
+        newheroname(newherodDialog);
         newheroclass();
     }
 
-    static public void newheroname(){
+    static public void newheroname(JDialog newherodDialog){
+        JLabel namelable = new JLabel("");        
+        JButton submitButtonname= new JButton("submit");
+        JTextField nametextfield = new JTextField("enter hero name" ,20);
         // dialoge box (new hero)
         // dialoge box layout
         newherodDialog.setLayout(new FlowLayout());
         // set invisible in the beginning
-        // dialog size
         newherodDialog.setSize(480, 150);
         newherodDialog.add(namelable);
         // dialog box button for adding name
@@ -76,7 +75,7 @@ public class GameGuiView implements View{
         nametextfield.setBounds(120, 40, 160, 20);
     }
 
-    static public void newheroclass(){
+    public void newheroclass(){
         // dialoge box layout
         heroclassDialog.setLayout(new FlowLayout());
         // set invisible in the beginning
@@ -98,7 +97,7 @@ public class GameGuiView implements View{
         heroclassDialog.add(submitButtonclass);
     }
 
-    static public void loadhero(){
+    public void loadhero(){
         // dialoge box (load hero)
         // dialog size
         loadheroDialog.setSize(700, 500);
@@ -148,21 +147,31 @@ public class GameGuiView implements View{
         loadheroDialog.setLayout(new FlowLayout());
     }
 
-    static public void makewindow(){
+    public void makewindow(){
         heroclassDialog.setVisible(false);
-        newherodDialog.setVisible(false);
+        
 
         JMenuBar gameoptions = new JMenuBar();
         JMenu game = new JMenu("game");
-        JMenuItem newgame,loadgame;
+        JMenuItem newgame,loadgame, savegame;
 
+        /*
+
+            Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+            frame.setLocation(
+                (int) ((dimension.getWidth() - frame.getWidth())/2),
+                (int) ((dimension.getHeight() - frame.getHeight())/2));
+
+        */
         newgame = new JMenuItem("New Game");
         loadgame = new JMenuItem("Load Game");
+        savegame = new JMenuItem("Save Game");
 
         newgame.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
+                JDialog newherodDialog = new JDialog(frame, "New Hero");
                 newherodDialog.setVisible(true);
-                newhero();
+                newhero(newherodDialog);
             }
         });
 
@@ -173,8 +182,29 @@ public class GameGuiView implements View{
             }
         });
 
+        savegame.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                JDialog gamesaved = new JDialog(frame, "game save");
+                gamesaved.setVisible(true);
+                gamesaved.setLayout(new FlowLayout());
+                gamesaved.setSize(380, 100);
+
+                JLabel message = new JLabel("Thy Game Saved!");
+                JButton dismiss = new JButton("OK");
+                
+                dismiss.addActionListener(new ActionListener(){
+                    public void actionPerformed(ActionEvent e){
+                        gamesaved.setVisible(false);
+                    }
+                });
+                gamesaved.add(message);
+                gamesaved.add(dismiss);
+            }
+        });
+
         game.add(newgame);
         game.add(loadgame);
+        game.add(savegame);
         gameoptions.add(game);
         frame.setJMenuBar(gameoptions);
 
@@ -194,11 +224,44 @@ public class GameGuiView implements View{
         guiconsole.setBounds(10, 10, 300, 700);
         guiconsole.setEditable(false);
         guiconsole.setBackground(Color.GREEN);
+        guiconsole.setVisible(true);
         frame.add(guiconsole);
 
-        //--------------------LOAD HERO------------------//
 
+        // -------------- MOVEMENT BUTTONS ------------------ //
+        
+        JButton moveButtonN = new JButton("Move North");
+        frame.add(moveButtonN);
+        moveButtonN.setBounds(320, 10, 100, 20);
 
+        JButton moveButtonS = new JButton("Move South");
+        frame.add(moveButtonS);
+        moveButtonS.setBounds(430, 10, 100, 20);
+
+        JButton moveButtonW = new JButton("Move West");
+        frame.add(moveButtonW);
+        moveButtonW.setBounds(320, 40, 100, 20);
+
+        JButton moveButtonE = new JButton("Move East");
+        frame.add(moveButtonE);
+        moveButtonE.setBounds(430, 40, 100, 20);
+
+        // -------------- STAT BUTTONS ---------------------- //
+
+        JButton HeroButton = new JButton("Hero Stats");
+        frame.add(HeroButton);
+        HeroButton.setBounds(320, 70, 100, 20);
+
+        JButton clearButton = new JButton("Clear console");
+        frame.add(clearButton);
+        clearButton.setBounds(430, 70, 100, 20);
+
+        JButton mapButton = new JButton("Map");
+        frame.add(mapButton);
+        mapButton.setBounds(540, 70, 100, 20);
+
+        // ------------- Fight Dialoge FIGHT DIALOGE ----------------- //
+        //JDialog fightDialog = new JD
     };
     
 }
