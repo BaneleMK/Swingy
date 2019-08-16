@@ -65,8 +65,8 @@
     <property name="sun.cpu.isalist" value=""/>
   </properties>
   <testcase classname="com.swingy.AppTest" name="testweapon" time="0.003"/>
-  <testcase classname="com.swingy.AppTest" name="testApp" time="0.001"/>
-  <testcase classname="com.swingy.AppTest" name="testartifact" time="0"/>
+  <testcase classname="com.swingy.AppTest" name="testApp" time="0"/>
+  <testcase classname="com.swingy.AppTest" name="testartifact" time="0.001"/>
   <testcase classname="com.swingy.AppTest" name="makechar" time="0"/>
   <testcase classname="com.swingy.AppTest" name="makearray" time="0"/>
 </testsuite>

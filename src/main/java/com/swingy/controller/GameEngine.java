@@ -338,6 +338,10 @@ public class GameEngine{
         }
         return new Hero(name, char_class);
     }
+    
+        public Hero makeHerogui(GameGuiView g){
+            return new Hero(g.nametextfield.getText() , g.classtextfield.getText());
+        }   
 
     public void makeorloadhero(){
         boolean select = false;

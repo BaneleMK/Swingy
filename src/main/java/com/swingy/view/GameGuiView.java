@@ -9,8 +9,12 @@ import java.awt.*;
 
 import javax.swing.*;
 
+import com.swingy.controller.GameEngine;
+
 public class GameGuiView implements Game{
     static private JFrame frame = new JFrame("Swingy");
+
+    static GameEngine controller;
 
     static JButton btnewhero = new JButton("New Hero");
     static JButton bloadhero = new JButton("Load Hero");
@@ -22,7 +26,6 @@ public class GameGuiView implements Game{
     static JDialog heroclassDialog = new JDialog(frame, "New Hero");
     static JLabel classlable = new JLabel("");        
     static JButton submitButtonclass= new JButton("submit");
-    static JTextField classtextfield = new JTextField("enter hero class" ,20);
 
     // load a hero 
     static JDialog loadheroDialog = new JDialog(frame, "Load Hero");
@@ -32,8 +35,14 @@ public class GameGuiView implements Game{
     static JPanel jPanelload = new JPanel();
     static int heroes_saves = 0;
 
-    public GameGuiView(){
+    // hero name and class
+    static JTextField nametextfield = new JTextField("enter hero name" ,20);
+    static JTextField classtextfield = new JTextField("enter hero class" ,20);
+    
 
+
+    public GameGuiView(GameEngine c){
+        controller = c;
     }
 
     public void consolelog(String message){
@@ -49,13 +58,13 @@ public class GameGuiView implements Game{
     static public void newheroname(JDialog newherodDialog){
         JLabel namelable = new JLabel("");        
         JButton submitButtonname= new JButton("submit");
-        JTextField nametextfield = new JTextField("enter hero name" ,20);
         // dialoge box (new hero)
         // dialoge box layout
         newherodDialog.setLayout(new FlowLayout());
         // set invisible in the beginning
         newherodDialog.setSize(480, 150);
         newherodDialog.add(namelable);
+        
         // dialog box button for adding name
         submitButtonname.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
@@ -89,6 +98,7 @@ public class GameGuiView implements Game{
                     classlable.setText("[HERO CLASSES DON'T HAVE SPACES INSIDE AND ARE NOT BLANK]");
                 } else {
                     heroclassDialog.setVisible(false);
+                    controller.makeHerogui(this);
                 }
             }
         });
@@ -108,6 +118,7 @@ public class GameGuiView implements Game{
         File file = new File("src/main/java/com/swingy/model/heroes/");
         String filenames[] = file.list();
         if (filenames.length != heroes_saves){
+            loadheroDialog.add(GameGuiView.submitButtonload);
             heroes_saves = filenames.length;
             for(int i = 0; i < filenames.length ; i++){
                 list.addElement(i+" - "+filenames[i]);
@@ -141,7 +152,6 @@ public class GameGuiView implements Game{
                     
             }
         });
-        loadheroDialog.add(submitButtonload);
         loadheroDialog.add(heroeslist);
         loadheroDialog.add(loadlable);
         loadheroDialog.setLayout(new FlowLayout());
@@ -220,12 +230,24 @@ public class GameGuiView implements Game{
         // makes the frame visible 
         frame.setVisible(true);
 
+        //----------------TEXT AREAS----------------//
         JTextArea guiconsole = new JTextArea();
         guiconsole.setBounds(10, 10, 300, 700);
         guiconsole.setEditable(false);
         guiconsole.setBackground(Color.GREEN);
         guiconsole.setVisible(true);
         frame.add(guiconsole);
+
+        /*
+        
+        // hopefully wont need a second text area
+
+        JTextArea guiconsole = new JTextArea();
+        guiconsole.setBounds(10, 10, 300, 700);
+        guiconsole.setEditable(false);
+        guiconsole.setBackground(Color.GREEN);
+        guiconsole.setVisible(true);
+        frame.add(guiconsole);*/
 
 
         // -------------- MOVEMENT BUTTONS ------------------ //
@@ -260,8 +282,29 @@ public class GameGuiView implements Game{
         frame.add(mapButton);
         mapButton.setBounds(540, 70, 100, 20);
 
-        // ------------- Fight Dialoge FIGHT DIALOGE ----------------- //
-        //JDialog fightDialog = new JD
+        // -------------- FIGHT/CONFLICt BUTTONS ------------------------//
+
+
+        JButton fightButton = new JButton("Fight");
+        frame.add(fightButton);
+        fightButton.setBounds(320, 100, 100, 20);
+
+        JButton runButton = new JButton("Run");
+        frame.add(runButton);
+        runButton.setBounds(430, 100, 100, 20);
+
+        // -------------------- ITEM BUTTON -----------------------------//
+        JButton compareButton = new JButton("Compare");
+        frame.add(compareButton);
+        compareButton.setBounds(320, 140, 100, 20);
+        
+        JButton useButton = new JButton("Use");
+        frame.add(useButton);
+        useButton.setBounds(430, 140, 100, 20);
+
+        JButton leaveButton = new JButton("Leave");
+        frame.add(leaveButton);
+        leaveButton.setBounds(540, 140, 100, 20);
     };
     
 }

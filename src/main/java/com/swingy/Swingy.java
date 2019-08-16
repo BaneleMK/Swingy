@@ -18,7 +18,8 @@ public final class Swingy {
                 gameEngine = new GameEngine();
                 gameEngine.makeorloadhero();
             } else if (args[0].equals("gui")){
-                GameGuiView GameGuiView = new GameGuiView();
+                gameEngine = new GameEngine();
+                GameGuiView GameGuiView = new GameGuiView(gameEngine);
                 GameGuiView.makewindow();
             } else {
                 System.out.println("invalid view mode");
