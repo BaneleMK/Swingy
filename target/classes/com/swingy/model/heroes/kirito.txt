@@ -1,0 +1,10 @@
+Name: kirito
+Class: solo_player
+Level: 1
+XP: 0 / 1000
+Hitpoints: 40
+Attack: 5
+defaense: dsa asd 0
+Weapon: N/A
+Armor: N/A
+Helm: N/A

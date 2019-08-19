@@ -3,61 +3,95 @@ package com.swingy.view;
 //import java.awt.event.ActionEvent;
 //import java.awt.event.ActionListener;
 
-import java.awt.event.*;
 import java.io.File;
 import java.awt.*;
 
 import javax.swing.*;
+import com.swingy.model.*;
 
-import com.swingy.controller.GameEngine;
 
 public class GameGuiView implements Game{
-    static private JFrame frame = new JFrame("Swingy");
+    private JFrame frame = new JFrame("Swingy");
 
-    static GameEngine controller;
-
-    static JButton btnewhero = new JButton("New Hero");
-    static JButton bloadhero = new JButton("Load Hero");
+    private JButton btnewhero = new JButton("New Hero");
+    private JButton bloadhero = new JButton("Load Hero");
     // new hero name diobox
-
-    
     // new hero class diobox
 
-    static JDialog heroclassDialog = new JDialog(frame, "New Hero");
-    static JLabel classlable = new JLabel("");        
-    static JButton submitButtonclass= new JButton("submit");
+    private JDialog heroclassDialog = new JDialog(frame, "New Hero");
+    private JLabel classlable = new JLabel("");        
+    private JButton submitButtonclass= new JButton("submit");
 
     // load a hero 
-    static JDialog loadheroDialog = new JDialog(frame, "Load Hero");
-    static JLabel loadlable = new JLabel("");        
-    static JButton submitButtonload= new JButton("submit");
-    static JList<String> heroeslist = new JList<String>();
-    static JPanel jPanelload = new JPanel();
-    static int heroes_saves = 0;
+    private JDialog loadheroDialog = new JDialog(frame, "Load Hero");
+    private JLabel loadlable = new JLabel("");        
+    private JButton submitButtonload= new JButton("submit");
+    private JList<String> heroeslist = new JList<String>();
+    private JPanel jPanelload = new JPanel();
+    private int heroes_saves = 0;
 
     // hero name and class
-    static JTextField nametextfield = new JTextField("enter hero name" ,20);
-    static JTextField classtextfield = new JTextField("enter hero class" ,20);
+    private JTextField nametextfield = new JTextField("enter hero name" ,20);
+    private JTextField classtextfield = new JTextField("enter hero class" ,20);
+    JMenuBar gameoptions = new JMenuBar();
+    JMenu game = new JMenu("game");
+    JMenuItem newgame,loadgame, savegame;
+    JDialog newherodDialog = new JDialog(frame, "New Hero");
+    JDialog gamesaved = new JDialog(frame, "game save");
+    JLabel message = new JLabel("Thy Game Saved!");
+    JButton dismiss = new JButton("OK");
+    JTextArea guiconsole = new JTextArea();
+    JButton moveButtonN = new JButton("Move North");
+    JButton moveButtonS = new JButton("Move South");
+    JButton moveButtonW = new JButton("Move West");
+    JButton moveButtonE = new JButton("Move East");
+    JButton HeroButton = new JButton("Hero Stats");
+    JButton clearButton = new JButton("Clear console");
+    JButton mapButton = new JButton("Map");
+    JButton fightButton = new JButton("Fight");
+    JButton runButton = new JButton("Run");
+    JButton compareButton = new JButton("Compare");
+    JButton useButton = new JButton("Use");
+    JButton leaveButton = new JButton("Leave");
+    JLabel namelable = new JLabel("");        
+    JButton submitButtonname= new JButton("submit");
+    String filenames[];
+    
     
 
-
-    public GameGuiView(GameEngine c){
-        controller = c;
+    public GameGuiView(){
+        makewindow();
     }
 
     public void consolelog(String message){
-        // add some text to some elements
+        guiconsole.append(message+"\n");
     }
 
-    public void newhero(JDialog newherodDialog){
-        // ----------------NEW HERO------------------------ //
-        newheroname(newherodDialog);
-        newheroclass();
+    public void rendermap(GameCharacter[][][] map, int mapsize){
+
     }
 
-    static public void newheroname(JDialog newherodDialog){
-        JLabel namelable = new JLabel("");        
-        JButton submitButtonname= new JButton("submit");
+    public void hero_weapon(Hero hero){
+    
+    }
+
+    public void hero_armor(Hero hero){
+    
+    }
+
+    public void hero_helm(Hero hero){
+    
+    }
+
+    public void hero_stats(Hero hero){
+
+    }
+
+    public void villain_stats(Villain villain){
+    }
+
+    public void newheroname(){
+        
         // dialoge box (new hero)
         // dialoge box layout
         newherodDialog.setLayout(new FlowLayout());
@@ -66,16 +100,7 @@ public class GameGuiView implements Game{
         newherodDialog.add(namelable);
         
         // dialog box button for adding name
-        submitButtonname.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                if (nametextfield.getText().contains(" ") || nametextfield.getText().equals("")){
-                    namelable.setText("[HERO NAMES DON'T HAVE SPACES INSIDE AND ARE NOT BLANK]");
-                } else {
-                    newherodDialog.setVisible(false);
-                    heroclassDialog.setVisible(true);
-                }
-            }
-        });
+        
         // adds button and textspace to dialog box
         newherodDialog.add(nametextfield);
         newherodDialog.add(submitButtonname);
@@ -92,16 +117,7 @@ public class GameGuiView implements Game{
         heroclassDialog.setSize(480, 150);
         heroclassDialog.add(classlable);
         // dialog box button for adding name
-        submitButtonclass.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                if (classtextfield.getText().contains(" ") || classtextfield.getText().equals("")){
-                    classlable.setText("[HERO CLASSES DON'T HAVE SPACES INSIDE AND ARE NOT BLANK]");
-                } else {
-                    heroclassDialog.setVisible(false);
-                    controller.makeHerogui(this);
-                }
-            }
-        });
+        
         // adds button and textspace to dialog box
         heroclassDialog.add(classtextfield);
         heroclassDialog.add(submitButtonclass);
@@ -116,12 +132,12 @@ public class GameGuiView implements Game{
         // check if hero selected and load
         DefaultListModel<String> list = new DefaultListModel<String>();
         File file = new File("src/main/java/com/swingy/model/heroes/");
-        String filenames[] = file.list();
+        filenames = file.list();
         if (filenames.length != heroes_saves){
-            loadheroDialog.add(GameGuiView.submitButtonload);
+            loadheroDialog.add(submitButtonload);
             heroes_saves = filenames.length;
             for(int i = 0; i < filenames.length ; i++){
-                list.addElement(i+" - "+filenames[i]);
+                list.addElement(filenames[i]);
                 // System.out.println(list.get(i));
             }
             heroeslist = new JList<>(list);
@@ -131,27 +147,7 @@ public class GameGuiView implements Game{
             System.out.println("SELECT SOMETHING PLEASE");
         }
 
-        submitButtonload.addActionListener(new ActionListener(){
-                public void actionPerformed(ActionEvent e){
-                    try {
-                        if (heroeslist.getSelectedValue().equals("") || heroeslist.getSelectedValue().equals(null)){
-                            loadlable.setText("[A QUEST WIHOUT A HERO? no...PLEASE CHOOSE A HERO]");
-                            System.out.println("op = A");
-                        } else {
-                            loadheroDialog.setVisible(false);
-                            System.out.println("op = B "+heroeslist.getSelectedValue()+" - "+null);
-                        }
-                        System.out.println("op = C");    
-                    } catch(NullPointerException exception){
-                        System.out.println("op = A");
-                        loadlable.setText("[A QUEST WIHOUT A HERO? no...PLEASE CHOOSE A HERO]");
-                    } catch (Exception exception) {
-                        System.out.println("op = A");
-                        System.out.println("big boo boo");
-                    }
-                    
-            }
-        });
+        
         loadheroDialog.add(heroeslist);
         loadheroDialog.add(loadlable);
         loadheroDialog.setLayout(new FlowLayout());
@@ -159,58 +155,10 @@ public class GameGuiView implements Game{
 
     public void makewindow(){
         heroclassDialog.setVisible(false);
-        
 
-        JMenuBar gameoptions = new JMenuBar();
-        JMenu game = new JMenu("game");
-        JMenuItem newgame,loadgame, savegame;
-
-        /*
-
-            Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-            frame.setLocation(
-                (int) ((dimension.getWidth() - frame.getWidth())/2),
-                (int) ((dimension.getHeight() - frame.getHeight())/2));
-
-        */
         newgame = new JMenuItem("New Game");
         loadgame = new JMenuItem("Load Game");
         savegame = new JMenuItem("Save Game");
-
-        newgame.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
-                JDialog newherodDialog = new JDialog(frame, "New Hero");
-                newherodDialog.setVisible(true);
-                newhero(newherodDialog);
-            }
-        });
-
-        loadgame.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
-                loadheroDialog.setVisible(true);
-                loadhero();
-            }
-        });
-
-        savegame.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
-                JDialog gamesaved = new JDialog(frame, "game save");
-                gamesaved.setVisible(true);
-                gamesaved.setLayout(new FlowLayout());
-                gamesaved.setSize(380, 100);
-
-                JLabel message = new JLabel("Thy Game Saved!");
-                JButton dismiss = new JButton("OK");
-                
-                dismiss.addActionListener(new ActionListener(){
-                    public void actionPerformed(ActionEvent e){
-                        gamesaved.setVisible(false);
-                    }
-                });
-                gamesaved.add(message);
-                gamesaved.add(dismiss);
-            }
-        });
 
         game.add(newgame);
         game.add(loadgame);
@@ -231,7 +179,7 @@ public class GameGuiView implements Game{
         frame.setVisible(true);
 
         //----------------TEXT AREAS----------------//
-        JTextArea guiconsole = new JTextArea();
+        
         guiconsole.setBounds(10, 10, 300, 700);
         guiconsole.setEditable(false);
         guiconsole.setBackground(Color.GREEN);
@@ -252,59 +200,255 @@ public class GameGuiView implements Game{
 
         // -------------- MOVEMENT BUTTONS ------------------ //
         
-        JButton moveButtonN = new JButton("Move North");
+        
         frame.add(moveButtonN);
         moveButtonN.setBounds(320, 10, 100, 20);
 
-        JButton moveButtonS = new JButton("Move South");
+        
         frame.add(moveButtonS);
         moveButtonS.setBounds(430, 10, 100, 20);
 
-        JButton moveButtonW = new JButton("Move West");
+        
         frame.add(moveButtonW);
         moveButtonW.setBounds(320, 40, 100, 20);
 
-        JButton moveButtonE = new JButton("Move East");
+        
         frame.add(moveButtonE);
         moveButtonE.setBounds(430, 40, 100, 20);
 
         // -------------- STAT BUTTONS ---------------------- //
 
-        JButton HeroButton = new JButton("Hero Stats");
+        
         frame.add(HeroButton);
         HeroButton.setBounds(320, 70, 100, 20);
 
-        JButton clearButton = new JButton("Clear console");
+        
         frame.add(clearButton);
         clearButton.setBounds(430, 70, 100, 20);
 
-        JButton mapButton = new JButton("Map");
+        
         frame.add(mapButton);
         mapButton.setBounds(540, 70, 100, 20);
 
         // -------------- FIGHT/CONFLICt BUTTONS ------------------------//
 
-
-        JButton fightButton = new JButton("Fight");
+        
         frame.add(fightButton);
         fightButton.setBounds(320, 100, 100, 20);
 
-        JButton runButton = new JButton("Run");
+        
         frame.add(runButton);
         runButton.setBounds(430, 100, 100, 20);
 
         // -------------------- ITEM BUTTON -----------------------------//
-        JButton compareButton = new JButton("Compare");
+        
         frame.add(compareButton);
         compareButton.setBounds(320, 140, 100, 20);
         
-        JButton useButton = new JButton("Use");
+        
         frame.add(useButton);
         useButton.setBounds(430, 140, 100, 20);
 
-        JButton leaveButton = new JButton("Leave");
+        
         frame.add(leaveButton);
         leaveButton.setBounds(540, 140, 100, 20);
     };
-    
+
+    /**
+     * @return the bloadhero
+     */
+    public JButton getBloadhero() {
+        return bloadhero;
+    }
+    /**
+     * @return the btnewhero
+     */
+    public JButton getBtnewhero() {
+        return btnewhero;
+    }/**
+     * @return the classlable
+     */
+    public JLabel getClasslable() {
+        return classlable;
+    }/**
+     * @return the classtextfield
+     */
+    public JTextField getClasstextfield() {
+        return classtextfield;
+    }/**
+     * @return the clearButton
+     */
+    public JButton getClearButton() {
+        return clearButton;
+    }/**
+     * @return the compareButton
+     */
+    public JButton getCompareButton() {
+        return compareButton;
+    }/**
+     * @return the dismiss
+     */
+    public JButton getDismiss() {
+        return dismiss;
+    }/**
+     * @return the fightButton
+     */
+    public JButton getFightButton() {
+        return fightButton;
+    }/**
+     * @return the frame
+     */
+    public JFrame getFrame() {
+        return frame;
+    }/**
+     * @return the game
+     */
+    public JMenu getGame() {
+        return game;
+    }/**
+     * @return the gameoptions
+     */
+    public JMenuBar getGameoptions() {
+        return gameoptions;
+    }/**
+     * @return the gamesaved
+     */
+    public JDialog getGamesaved() {
+        return gamesaved;
+    }/**
+     * @return the guiconsole
+     */
+    public JTextArea getGuiconsole() {
+        return guiconsole;
+    }/**
+     * @return the heroButton
+     */
+    public JButton getHeroButton() {
+        return HeroButton;
+    }/**
+     * @return the heroclassDialog
+     */
+    public JDialog getHeroclassDialog() {
+        return heroclassDialog;
+    }/**
+     * @return the heroes_saves
+     */
+    public int getHeroes_saves() {
+        return heroes_saves;
+    }/**
+     * @return the heroeslist
+     */
+    public JList<String> getHeroeslist() {
+        return heroeslist;
+    }/**
+     * @return the leaveButton
+     */
+    public JButton getLeaveButton() {
+        return leaveButton;
+    }/**
+     * @return the loadgame
+     */
+    public JMenuItem getLoadgame() {
+        return loadgame;
+    }/**
+     * @return the loadheroDialog
+     */
+    public JDialog getLoadheroDialog() {
+        return loadheroDialog;
+    }/**
+     * @return the loadlable
+     */
+    public JLabel getLoadlable() {
+        return loadlable;
+    }/**
+     * @return the mapButton
+     */
+    public JButton getMapButton() {
+        return mapButton;
+    }/**
+     * @return the message
+     */
+    public JLabel getMessage() {
+        return message;
+    }/**
+     * @return the moveButtonE
+     */
+    public JButton getMoveButtonE() {
+        return moveButtonE;
+    }/**
+     * @return the moveButtonN
+     */
+    public JButton getMoveButtonN() {
+        return moveButtonN;
+    }/**
+     * @return the moveButtonS
+     */
+    public JButton getMoveButtonS() {
+        return moveButtonS;
+    }/**
+     * @return the moveButtonW
+     */
+    public JButton getMoveButtonW() {
+        return moveButtonW;
+    }/**
+     * @return the nametextfield
+     */
+    public JTextField getNametextfield() {
+        return nametextfield;
+    }/**
+     * @return the newgame
+     */
+    public JMenuItem getNewgame() {
+        return newgame;
+    }/**
+     * @return the newherodDialog
+     */
+    public JDialog getNewherodDialog() {
+        return newherodDialog;
+    }/**
+     * @return the runButton
+     */
+    public JButton getRunButton() {
+        return runButton;
+    }/**
+     * @return the savegame
+     */
+    public JMenuItem getSavegame() {
+        return savegame;
+    }/**
+     * @return the submitButtonclass
+     */
+    public JButton getSubmitButtonclass() {
+        return submitButtonclass;
+    }/**
+     * @return the submitButtonload
+     */
+    public JButton getSubmitButtonload() {
+        return submitButtonload;
+    }/**
+     * @return the useButton
+     */
+    public JButton getUseButton() {
+        return useButton;
+    }/**
+     * @return the jPanelload
+     */
+    public JPanel getjPanelload() {
+        return jPanelload;
+    }/**
+     * @return the namelable
+     */
+    public JLabel getNamelable() {
+        return namelable;
+    }/**
+     * @return the submitButtonname
+     */
+    public JButton getSubmitButtonname() {
+        return submitButtonname;
+    }/**
+     * @return the filenames
+     */
+    public String[] getFilenames() {
+        return filenames;
+    }
 }

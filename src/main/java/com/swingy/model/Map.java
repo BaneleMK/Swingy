@@ -1,6 +1,8 @@
 package com.swingy.model;
 import java.util.Random;
 
+import com.swingy.view.Game;
+
 public class Map {
     private int _mapsize;
     GameCharacter[][][] map;
@@ -39,13 +41,13 @@ public class Map {
         return _hero_ylocation;
     }
     
-    public void killvillain(){
+    public void killvillain(Game GameView){
         // check if this actually gets rid of it in memory
-        System.out.println("The Vile Villain "+map[_hero_ylocation][_hero_xlocation][0].get_name()+" has been slain.");
+        GameView.consolelog("The Vile Villain "+map[_hero_ylocation][_hero_xlocation][0].get_name()+" has been slain.");
         map[_hero_ylocation][_hero_xlocation][0] = null;
     }
 
-    private void newherolocation(int y, int x){
+    private void newherolocation(int y, int x, Game GameView){
         if (y >= 0 && y < _mapsize && x >= 0 && x < _mapsize){
             _prev_hero_xlocation = _hero_xlocation;
             _prev_hero_ylocation = _hero_ylocation;
@@ -54,7 +56,7 @@ public class Map {
             _hero_ylocation = y;
             _hero_xlocation = x;
         } else {
-            System.out.println("But you can no longer move that way.");
+            GameView.consolelog("But you can no longer move that way.");
         }
     }
 
@@ -67,35 +69,35 @@ public class Map {
 
     
 
-    public void movehero(String direction){
+    public void movehero(String direction, Game GameView){
 
         switch (direction.toUpperCase()) {
             case "NORTH":
-                System.out.println("You move NORTH.");
-                newherolocation(_hero_ylocation - 1, _hero_xlocation);
+                GameView.consolelog("You move NORTH.");
+                newherolocation(_hero_ylocation - 1, _hero_xlocation,  GameView);
                 break;
             case "SOUTH":
-                System.out.println("You move SOUTH.");
-                newherolocation(_hero_ylocation + 1, _hero_xlocation);
+                GameView.consolelog("You move SOUTH.");
+                newherolocation(_hero_ylocation + 1, _hero_xlocation,  GameView);
                 break;
             case "WEST":
-                System.out.println("You move WEST.");
-                newherolocation(_hero_ylocation, _hero_xlocation - 1);
+                GameView.consolelog("You move WEST.");
+                newherolocation(_hero_ylocation, _hero_xlocation - 1,  GameView);
                 break;
             case "EAST":
-                System.out.println("You move EAST.");
-                newherolocation(_hero_ylocation, _hero_xlocation + 1);
+                GameView.consolelog("You move EAST.");
+                newherolocation(_hero_ylocation, _hero_xlocation + 1,  GameView);
                 break;
             default:
-                System.out.println("Invalid direction.");
+                GameView.consolelog("Invalid direction.");
                 break;
         }
         
     }
 
-    public void generatenewmap(GameCharacter hero){
+    public void generatenewmap(GameCharacter hero, Game GameView){
         _mapsize = (hero.get_level()-1)*5+10-(hero.get_level()%2);
-        System.out.println("Making map of size "+_mapsize);
+        GameView.consolelog("Making map of size "+_mapsize);
         
         // init map 
         map = new GameCharacter[_mapsize][_mapsize][2];
@@ -103,7 +105,7 @@ public class Map {
         _hero_xlocation = _hero_ylocation = Math.round(_mapsize/2);
         
         // put player on map
-        System.out.println("Placing Hero on map");
+        GameView.consolelog("Placing Hero on map");
         map[_hero_ylocation][_hero_xlocation][1] = hero;
         
         // put mobs and stuff here
@@ -111,7 +113,7 @@ public class Map {
         int maxmobs = _mapsize * 4;
         int currentmobs = 0;
     
-        System.out.println("Preping to summon Villains");
+        GameView.consolelog("Preping to summon Villains");
         for(int y = 0; y<_mapsize; y++){
             for(int x = 0; x<_mapsize; x++){
                 // check if a villain randomly spawns and if the max amount of mobs is not reached for the player level.
@@ -123,8 +125,8 @@ public class Map {
                 }
             }   
         }
-        System.out.println("Villains made");
+        GameView.consolelog("Villains made");
 
-        System.out.println("Hero "+map[_hero_ylocation][_hero_xlocation][1].get_name()+" is ready to fight");
+        GameView.consolelog("Hero "+map[_hero_ylocation][_hero_xlocation][1].get_name()+" is ready to fight");
     }
 }

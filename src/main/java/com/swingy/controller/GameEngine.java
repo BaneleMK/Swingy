@@ -9,7 +9,10 @@ import java.util.Scanner;
 import com.swingy.SaveHero;
 import com.swingy.model.*;
 import com.swingy.view.*;
+import java.awt.*;
+import java.awt.event.*;
 
+import javax.management.RuntimeErrorException;
 //import javax.validation.constraints.NotBlank;
 //import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -33,8 +36,10 @@ public class GameEngine{
     static Scanner gameinput = new Scanner(System.in);
     static boolean game = true;
 
+    Map map;
+    GameGuiView gameGuiView;
 
-    private  void updatemapview(GameView gameview, Map map){
+    private  void updatemapview(Game gameview, Map map){
         gameview.rendermap(map.getMap(), map.get_mapsize());
     }
 
@@ -65,7 +70,7 @@ public class GameEngine{
         }
     }
 
-    private  void checkevent(Map map, GameView gameview){
+    private  void checkevent(Map map, Game gameview){
         Villain villain = (Villain)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][0];
         Hero hero = (Hero)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][1];
         if (villain != null && hero != null){
@@ -153,7 +158,7 @@ public class GameEngine{
                         }
                     }
                     int xpgained = villain.get_level() * 200;
-                    map.killvillain();
+                    map.killvillain(gameview);
                     gameview.consolelog(ANSI_YELLOW+"You won the FIGHT with "+ANSI_GREEN+hero.get_lastfighthp()+" / "+hero.get_hitpoints()+ANSI_YELLOW+" hp remaining! you have gained "+ANSI_GREEN+xpgained+ANSI_YELLOW+" XP"+ANSI_RESET);
                     if (hero.getxp(xpgained) == true){
                         gameview.consolelog("YOU LEVELED UP TO LV "+hero.get_level()+"!");
@@ -162,12 +167,12 @@ public class GameEngine{
                     int xplost = hero.get_experience() / 2;
                     gameview.consolelog(ANSI_RED+"YOU DIED | you lost "+ xplost +" xp"+ANSI_RESET);
                     hero.set_experience(xplost);
-                    map.generatenewmap(hero);
+                    map.generatenewmap(hero, gameview);
                 }
             }
         } if (map.get_Hero_xlocation() == 0 || map.get_Hero_xlocation() == (map.get_mapsize() - 1) || map.get_Hero_ylocation() == 0 || map.get_Hero_ylocation() == (map.get_mapsize() - 1)){
             gameview.consolelog("You have escaped the dungeon, put simply you win");
-            map.generatenewmap(hero);
+            map.generatenewmap(hero, gameview);
         }
     }
 
@@ -199,22 +204,16 @@ public class GameEngine{
 
     }
 
-    public  Hero loadhero(Map map, GameView gameview){
-        int line = 1;
-        File file = new File("src/main/java/com/swingy/model/heroes/");
-        String filenames[] = file.list();
-        if (filenames.length != 0){
-            for(int i = 0; i < filenames.length ; i++){
-                gameview.consolelog(i+" - "+filenames[i]);
-            }
-            boolean character_selected = false;
-            int selected = 0;
-            try {
-            while (character_selected == false){
-                if ((selected = Integer.parseInt(gameinput.nextLine())) <= (filenames.length - 1)) {
-                
+    public Hero loadheroselected(String filenames[] ,int selected, int line, Game gameview){
+        for (String var : filenames) {
+            System.out.println("name"+var);
+        }
+        System.out.println("selected :"+selected);
+        try{
+            
                     BufferedReader br = new BufferedReader(new FileReader("src/main/java/com/swingy/model/heroes/"+filenames[selected]));
                     String name = br.readLine().split(" ")[1];
+                    System.out.println("name is :" +name);
                     line++;
                     String char_class = br.readLine().split(" ")[1];
                     line++;
@@ -281,8 +280,25 @@ public class GameEngine{
                         }
                     }
                     br.close();
-                    character_selected = true;
                     return loaded_hero;
+                } catch (Exception e) {
+                    throw  new RuntimeErrorException(null, "file tempered with or in wrong format...or both");
+                }
+    };
+
+    public Hero loadhero(Map map, Game gameview){
+        int line = 1;
+        File file = new File("src/main/java/com/swingy/model/heroes/");
+        String filenames[] = file.list();
+        if (filenames.length != 0){
+            for(int i = 0; i < filenames.length ; i++){
+                gameview.consolelog(i+" - "+filenames[i]);
+            }
+            int selected = 0;
+            try {
+            while (true){
+                if ((selected = Integer.parseInt(gameinput.nextLine())) <= (filenames.length - 1)) {
+                    return loadheroselected(filenames, selected, line, gameview);
                 } else{
                     gameview.consolelog("Selection is out of bound");
                 }
@@ -306,8 +322,7 @@ public class GameEngine{
         }
         return null;
     }
-
-    public Hero makeHero(GameView gameview){
+    public Hero makeHero(Game gameview){
         @Size(min = 4, max = 20, message = "Heroes have names with 1 - 20 characters") String name = null;
         String tempname = null;
         String char_class = null;
@@ -338,16 +353,65 @@ public class GameEngine{
         }
         return new Hero(name, char_class);
     }
+
     
-        public Hero makeHerogui(GameGuiView g){
-            return new Hero(g.nametextfield.getText() , g.classtextfield.getText());
-        }   
+    
+    public void rungamegui(Game gameview, Hero hero){
+        Map map = new Map();
+        map.generatenewmap(hero, gameview);
+        updatemapview(gameview, map);
+        while (game){
+            
+            gameview.consolelog(ANSI_PURPLE+"Available commands: MAP, MOVE, HERO, CLEAR, SAVE, LOAD, NEW HERO AND QUIT"+ANSI_RESET);
+            switch (gameinput.nextLine().toUpperCase()) {
+                case "MAP":
+                    updatemapview(gameview, map);
+                    break;
+                case "MOVE":
+                    gameview.consolelog("Choose direction [NORTH, EAST, SOUTH, WEST]");
+                    map.movehero(gameinput.nextLine(), gameview);
+                    checkevent(map, gameview);
+                    break;
+                case "HERO":
+                    gameview.hero_stats((Hero)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][1]);
+                    break;
+                case "QUIT":
+                    game = false;
+                    savehero((Hero)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][1]);
+                    gameview.consolelog("Hero "+hero.get_name()+" saved");
+                    break;
+                case "CLEAR":
+                    System.out.print("\033[H\033[2J");  
+                    System.out.flush();
+                    break;
+                case "SAVE":
+                    savehero((Hero)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][1]);
+                    gameview.consolelog("Hero "+hero.get_name()+" saved");
+                    break;
+                case "LOAD":
+                    Hero temphero = loadhero(map, gameview);
+                    if (temphero != null){
+                        map.generatenewmap(temphero, gameview);
+                        temphero = null;
+                    }
+                    break;
+                case "NEW HERO":
+                    map.generatenewmap(makeHero(gameview), gameview);
+                    break;
+                default:
+                    gameview.consolelog("Invalid command");
+                    break;
+           }
+           
+        }
+        gameview.consolelog("-_-[GAME OVER]-_-");
+    }
 
     public void makeorloadhero(){
         boolean select = false;
         Hero hero = null;
         Map gamemap = new Map();
-        GameView gameview = new GameView();
+        Game gameview = new GameView();
         while (select == false)
         {
             gameview.consolelog(ANSI_PURPLE+"Available commands: NEW HERO and LOAD HERO"+ANSI_RESET);
@@ -371,8 +435,8 @@ public class GameEngine{
         rungame(gameview, gamemap, hero);;
     }
 
-    public void rungame(GameView gameview, Map map, Hero hero){
-        map.generatenewmap(hero);
+    public void rungame(Game gameview, Map map, Hero hero){
+        map.generatenewmap(hero, gameview);
         updatemapview(gameview, map);
         while (game){
             
@@ -383,7 +447,7 @@ public class GameEngine{
                     break;
                 case "MOVE":
                     gameview.consolelog("Choose direction [NORTH, EAST, SOUTH, WEST]");
-                    map.movehero(gameinput.nextLine());
+                    map.movehero(gameinput.nextLine(), gameview);
                     checkevent(map, gameview);
                     break;
                 case "HERO":
@@ -405,12 +469,12 @@ public class GameEngine{
                 case "LOAD":
                     Hero temphero = loadhero(map, gameview);
                     if (temphero != null){
-                        map.generatenewmap(temphero);
+                        map.generatenewmap(temphero, gameview);
                         temphero = null;
                     }
                     break;
                 case "NEW HERO":
-                    map.generatenewmap(makeHero(gameview));
+                    map.generatenewmap(makeHero(gameview), gameview);
                     break;
                 default:
                     gameview.consolelog("Invalid command");
@@ -421,4 +485,94 @@ public class GameEngine{
         gameview.consolelog("-_-[GAME OVER]-_-");
     }
     
+    public void GUIcontoller(GameGuiView gv){
+        map = new Map();
+        gameGuiView = gv;
+        initview();
+    }
+
+    public void initview(){
+        
+        gameGuiView.getSavegame().addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                
+                gameGuiView.getGamesaved().setVisible(true);
+                gameGuiView.getGamesaved().setLayout(new FlowLayout());
+                gameGuiView.getGamesaved().setSize(380, 100);
+                
+                gameGuiView.getDismiss().addActionListener(new ActionListener(){
+                    public void actionPerformed(ActionEvent e){
+                        gameGuiView.getSavegame().setVisible(false);
+                    }
+                });
+                gameGuiView.getGamesaved().add(gameGuiView.getMessage());
+                gameGuiView.getGamesaved().add(gameGuiView.getDismiss());
+                savehero((Hero)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][1]);
+            }
+        });
+
+        gameGuiView.getSubmitButtonload().addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                try {
+                    if (gameGuiView.getHeroeslist().getSelectedValue().equals("") || gameGuiView.getHeroeslist().getSelectedValue().equals(null)){
+                        gameGuiView.getLoadlable().setText("[A QUEST WIHOUT A HERO? no...PLEASE CHOOSE A HERO]");
+                        System.out.println("op = A");
+                    } else {
+                        gameGuiView.getLoadheroDialog().setVisible(false);
+                        // 0 is in place instead of a line int because im too lazy to integrate the line issue
+                        System.out.println("op = B "+gameGuiView.getHeroeslist().getSelectedValue()+" - "+null);
+                        map.generatenewmap(loadheroselected(gameGuiView.getFilenames(), Integer.parseInt(gameGuiView.getHeroeslist().getSelectedValue()), 0, gameGuiView), gameGuiView);
+                    }
+                    System.out.println("op = C");    
+                } catch(NullPointerException exception){
+                    System.out.println("op = D");
+                    gameGuiView.getLoadlable().setText("[A QUEST WIHOUT A HERO? no...PLEASE CHOOSE A HERO]");
+                } catch (Exception exception) {
+                    System.out.println("op = E");
+                    System.out.println("big boo boo "+exception.getMessage());
+                }
+            }
+        });
+
+        gameGuiView.getNewgame().addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                
+                gameGuiView.getNewherodDialog().setVisible(true);
+                gameGuiView.newheroname();
+                gameGuiView.newheroclass();
+            }
+        });
+
+        gameGuiView.getLoadgame().addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                gameGuiView.getLoadheroDialog().setVisible(true);
+                
+                gameGuiView.loadhero();
+            }
+        });
+
+        gameGuiView.getSubmitButtonname().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                if (gameGuiView.getNametextfield().getText().contains(" ") || gameGuiView.getNametextfield().getText().equals("")){
+                    gameGuiView.getNamelable().setText("[HERO NAMES DON'T HAVE SPACES INSIDE AND ARE NOT BLANK]");
+                } else {
+                    gameGuiView.getNewherodDialog().setVisible(false);
+                    gameGuiView.getHeroclassDialog().setVisible(true);
+                }
+            }
+        });
+
+        gameGuiView.getSubmitButtonclass().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                if (gameGuiView.getClasstextfield().getText().contains(" ") || gameGuiView.getClasstextfield().getText().equals("")){
+                    gameGuiView.getClasslable().setText("[HERO CLASSES DON'T HAVE SPACES INSIDE AND ARE NOT BLANK]");
+                } else {
+                    gameGuiView.getHeroclassDialog().setVisible(false);
+                    map.generatenewmap(new Hero(gameGuiView.getNametextfield().getText(), gameGuiView.getClasstextfield().getText()), gameGuiView);
+                }
+            }
+        });
+
+    }
+
 }
