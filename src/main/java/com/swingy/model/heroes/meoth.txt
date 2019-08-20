@@ -1,10 +1,10 @@
 Name: meoth
 Class: poke
 Level: 1
-XP: 0 / 1000
-Hitpoints: 40
+XP: 400 / 1000
+Hitpoints: 50
 Attack: 5
 defense: 0
 Weapon: N/A
 Armor: N/A
-Helm: N/A
+Helm: LV 1 Stark_helm + 10 HP

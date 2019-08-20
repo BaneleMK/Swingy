@@ -11,6 +11,7 @@ import com.swingy.model.*;
 
 
 public class GameGuiView implements Game{
+
     private JFrame frame = new JFrame("Swingy");
 
     private JButton btnewhero = new JButton("New Hero");
@@ -40,7 +41,9 @@ public class GameGuiView implements Game{
     JDialog gamesaved = new JDialog(frame, "game save");
     JLabel message = new JLabel("Thy Game Saved!");
     JButton dismiss = new JButton("OK");
+
     JTextArea guiconsole = new JTextArea();
+    JScrollPane guiscroll = new JScrollPane(guiconsole); 
     JButton moveButtonN = new JButton("Move North");
     JButton moveButtonS = new JButton("Move South");
     JButton moveButtonW = new JButton("Move West");
@@ -53,6 +56,7 @@ public class GameGuiView implements Game{
     JButton compareButton = new JButton("Compare");
     JButton useButton = new JButton("Use");
     JButton leaveButton = new JButton("Leave");
+    JButton vilButton = new JButton("Villain stats");
     JLabel namelable = new JLabel("");        
     JButton submitButtonname= new JButton("submit");
     String filenames[];
@@ -64,31 +68,77 @@ public class GameGuiView implements Game{
     }
 
     public void consolelog(String message){
-        guiconsole.append(message+"\n");
+        guiconsole.append(message+"\n---------------------------\n");
+    }
+
+    public void consolelogmap(String message){
+        guiconsole.append(message);
     }
 
     public void rendermap(GameCharacter[][][] map, int mapsize){
-
+        for(int y = 0; y<mapsize; y++){
+            for(int x = 0; x<mapsize; x++){
+                // check if a villain randomly spawns and if the max amount of mobs is not reached for the player level.
+                if (map[y][x][0] == null && map[y][x][1] == null){
+                    consolelogmap(". ");
+                } else if (map[y][x][0] != null && map[y][x][1] != null){
+                    consolelogmap("F ");
+                } else if (map[y][x][0] != null) {
+                    consolelogmap("V ");
+                } else if (map[y][x][1] != null) {
+                    consolelogmap("H ");
+                } else {
+                    consolelogmap("# ");
+                }
+            }
+            consolelogmap("\n");
+        }   
     }
 
     public void hero_weapon(Hero hero){
-    
+        if (hero.get_weapon() != null)
+            consolelog("Weapon: LV "+ hero.get_weapon().get_level()+" "+hero.get_weapon().get_name()+" + "+hero.get_weapon().get_attack()+" ATK");
+        else 
+            consolelog("Weapon: N/A");
     }
 
     public void hero_armor(Hero hero){
-    
+        if (hero.get_armor() != null)
+            consolelog("Armor: LV "+ hero.get_armor().get_level()+" "+hero.get_armor().get_name()+" + "+hero.get_armor().get_defense()+" DEF");
+        else
+            consolelog("Armor: N/A");
     }
 
     public void hero_helm(Hero hero){
-    
+        if (hero.get_helm() != null)
+            consolelog("Helm: LV "+ hero.get_helm().get_level()+" "+hero.get_helm().get_name()+" + "+hero.get_helm().get_hitpoints()+" HP" );
+        else
+            consolelog("Helm: N/A");
     }
 
     public void hero_stats(Hero hero){
+        consolelog("Name: "+hero.get_name()
+        +"\nClass: "+hero.get_class()
+        +"\nLevel: "+hero.get_level()
+        +"\nXP: "+hero.get_experience()+" / "+hero.get_xp_to_next_lv()
+        +"\nHitpoints: "+hero.get_hitpoints()
+        +"\nAttack: "+hero.get_attack()
+        +"\ndefense: "+hero.get_defense());
 
+        hero_weapon(hero);
+        hero_armor(hero);
+        hero_helm(hero);
     }
 
     public void villain_stats(Villain villain){
+        consolelog("Name: "+villain.get_name()
+        +"\nClass: "+villain.get_class()
+        +"\nLevel: "+villain.get_level()
+        +"\nHitpoints: "+villain.get_hitpoints()
+        +"\nAttack: "+villain.get_attack()
+        +"\ndefense: "+villain.get_defense());
     }
+
 
     public void newheroname(){
         
@@ -180,11 +230,13 @@ public class GameGuiView implements Game{
 
         //----------------TEXT AREAS----------------//
         
-        guiconsole.setBounds(10, 10, 300, 700);
+        guiconsole.setBounds(10, 170, 600, 500);
+        guiscroll.setBounds(10, 170, 770, 550);
+        guiscroll.setVisible(true);
         guiconsole.setEditable(false);
         guiconsole.setBackground(Color.GREEN);
         guiconsole.setVisible(true);
-        frame.add(guiconsole);
+        frame.add(guiscroll);
 
         /*
         
@@ -222,13 +274,14 @@ public class GameGuiView implements Game{
         frame.add(HeroButton);
         HeroButton.setBounds(320, 70, 100, 20);
 
-        
-        frame.add(clearButton);
-        clearButton.setBounds(430, 70, 100, 20);
+        frame.add(vilButton);
+        vilButton.setBounds(430, 70, 100, 20);
 
-        
+        frame.add(clearButton);
+        clearButton.setBounds(540, 70, 100, 20);
+
         frame.add(mapButton);
-        mapButton.setBounds(540, 70, 100, 20);
+        mapButton.setBounds(650, 70, 100, 20);
 
         // -------------- FIGHT/CONFLICt BUTTONS ------------------------//
 
@@ -450,5 +503,15 @@ public class GameGuiView implements Game{
      */
     public String[] getFilenames() {
         return filenames;
+    }/**
+     * @return the vilButton
+     */
+    public JButton getVilButton() {
+        return vilButton;
+    }/**
+     * @return the guiscroll
+     */
+    public JScrollPane getGuiscroll() {
+        return guiscroll;
     }
 }

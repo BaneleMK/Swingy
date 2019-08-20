@@ -15,7 +15,7 @@ public class GameView implements Game{
     public static final String ANSI_WHITE = "\u001B[37m";
 
     public GameView(){
-        System.out.println("--- LET THE GAME BEGIN ---");
+        consolelog("--- LET THE GAME BEGIN ---");
     }
 
     @Override
@@ -45,27 +45,27 @@ public class GameView implements Game{
 
     public void hero_weapon(Hero hero){
         if (hero.get_weapon() != null)
-            System.out.println("Weapon: LV "+ANSI_GREEN+ hero.get_weapon().get_level()+ANSI_RESET+" "+hero.get_weapon().get_name()+" + "+ANSI_GREEN+hero.get_weapon().get_attack()+" ATK"+ ANSI_RESET);
+            consolelog("Weapon: LV "+ANSI_GREEN+ hero.get_weapon().get_level()+ANSI_RESET+" "+hero.get_weapon().get_name()+" + "+ANSI_GREEN+hero.get_weapon().get_attack()+" ATK"+ ANSI_RESET);
         else 
-            System.out.println("Weapon:"+ANSI_RED+" N/A"+ ANSI_RESET);
+            consolelog("Weapon:"+ANSI_RED+" N/A"+ ANSI_RESET);
     }
 
     public void hero_armor(Hero hero){
         if (hero.get_armor() != null)
-            System.out.println("Armor: LV "+ANSI_GREEN+ hero.get_armor().get_level()+ANSI_RESET+" "+hero.get_armor().get_name()+" + "+ANSI_GREEN+hero.get_armor().get_defense()+" DEF"+ ANSI_RESET);
+            consolelog("Armor: LV "+ANSI_GREEN+ hero.get_armor().get_level()+ANSI_RESET+" "+hero.get_armor().get_name()+" + "+ANSI_GREEN+hero.get_armor().get_defense()+" DEF"+ ANSI_RESET);
         else
-            System.out.println("Armor:"+ANSI_RED+" N/A"+ ANSI_RESET);
+            consolelog("Armor:"+ANSI_RED+" N/A"+ ANSI_RESET);
     }
 
     public void hero_helm(Hero hero){
         if (hero.get_helm() != null)
-            System.out.println("Helm: LV "+ANSI_GREEN+ hero.get_helm().get_level()+ANSI_RESET+" "+hero.get_helm().get_name()+" + "+ANSI_GREEN+hero.get_helm().get_hitpoints()+" HP" + ANSI_RESET);
+            consolelog("Helm: LV "+ANSI_GREEN+ hero.get_helm().get_level()+ANSI_RESET+" "+hero.get_helm().get_name()+" + "+ANSI_GREEN+hero.get_helm().get_hitpoints()+" HP" + ANSI_RESET);
         else
-            System.out.println("Helm:"+ANSI_RED+" N/A"+ ANSI_RESET);
+            consolelog("Helm:"+ANSI_RED+" N/A"+ ANSI_RESET);
     }
 
     public void hero_stats(Hero hero){
-        System.out.println("Name: "+hero.get_name()
+        consolelog("Name: "+hero.get_name()
         +"\nClass: "+hero.get_class()
         +"\nLevel: "+hero.get_level()
         +"\nXP: "+hero.get_experience()+" / "+hero.get_xp_to_next_lv()
@@ -79,7 +79,7 @@ public class GameView implements Game{
     }
 
     public void villain_stats(Villain villain){
-        System.out.println("Name: "+villain.get_name()
+        consolelog("Name: "+villain.get_name()
         +"\nClass: "+villain.get_class()
         +"\nLevel: "+villain.get_level()
         +"\nHitpoints: "+villain.get_hitpoints()

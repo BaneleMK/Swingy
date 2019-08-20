@@ -47,7 +47,7 @@ public class Map {
         map[_hero_ylocation][_hero_xlocation][0] = null;
     }
 
-    private void newherolocation(int y, int x, Game GameView){
+    public void newherolocation(int y, int x, Game GameView){
         if (y >= 0 && y < _mapsize && x >= 0 && x < _mapsize){
             _prev_hero_xlocation = _hero_xlocation;
             _prev_hero_ylocation = _hero_ylocation;
@@ -67,33 +67,6 @@ public class Map {
         _hero_xlocation = _prev_hero_xlocation;
     }
 
-    
-
-    public void movehero(String direction, Game GameView){
-
-        switch (direction.toUpperCase()) {
-            case "NORTH":
-                GameView.consolelog("You move NORTH.");
-                newherolocation(_hero_ylocation - 1, _hero_xlocation,  GameView);
-                break;
-            case "SOUTH":
-                GameView.consolelog("You move SOUTH.");
-                newherolocation(_hero_ylocation + 1, _hero_xlocation,  GameView);
-                break;
-            case "WEST":
-                GameView.consolelog("You move WEST.");
-                newherolocation(_hero_ylocation, _hero_xlocation - 1,  GameView);
-                break;
-            case "EAST":
-                GameView.consolelog("You move EAST.");
-                newherolocation(_hero_ylocation, _hero_xlocation + 1,  GameView);
-                break;
-            default:
-                GameView.consolelog("Invalid direction.");
-                break;
-        }
-        
-    }
 
     public void generatenewmap(GameCharacter hero, Game GameView){
         _mapsize = (hero.get_level()-1)*5+10-(hero.get_level()%2);

@@ -32,12 +32,17 @@ public class GameEngine{
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
 
+    static boolean conflict = false;
+    static boolean artifact = false;
+    static int fight = 2;
+    Villain villain = null;
+    Hero hero = null;
 
     static Scanner gameinput = new Scanner(System.in);
     static boolean game = true;
 
     Map map;
-    GameGuiView gameGuiView;
+    GameGuiView gameGuiView = null;
 
     private  void updatemapview(Game gameview, Map map){
         gameview.rendermap(map.getMap(), map.get_mapsize());
@@ -70,35 +75,146 @@ public class GameEngine{
         }
     }
 
-    private  void checkevent(Map map, Game gameview){
-        Villain villain = (Villain)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][0];
-        Hero hero = (Hero)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][1];
+
+    public void movehero(String direction, Game GameView){
+
+        switch (direction.toUpperCase()) {
+            case "NORTH":
+                GameView.consolelog("You move NORTH.");
+                map.newherolocation(map.get_Hero_ylocation() - 1, map.get_Hero_xlocation(),  GameView);
+                break;
+            case "SOUTH":
+                GameView.consolelog("You move SOUTH.");
+                map.newherolocation(map.get_Hero_ylocation() + 1, map.get_Hero_xlocation(),  GameView);
+                break;
+            case "WEST":
+                GameView.consolelog("You move WEST.");
+                map.newherolocation(map.get_Hero_ylocation(), map.get_Hero_xlocation() - 1,  GameView);
+                break;
+            case "EAST":
+                GameView.consolelog("You move EAST.");
+                map.newherolocation(map.get_Hero_ylocation(), map.get_Hero_xlocation() + 1,  GameView);
+                break;
+            default:
+                GameView.consolelog("Invalid direction.");
+                break;
+        }
+        
+    }
+
+    private void fight(Game gameview){
+        gameview.consolelog("you decide fight the villain");
+        fight = startfight(hero, villain);
+        conflict = false;
+    }
+
+    private void artifactdrop(Game gameview){
+        
+        while (artifact){
+            gameview.consolelog(villain.get_name()+
+            " has dropped a level "+ANSI_GREEN+villain.give_artifact().get_level()+ANSI_RESET+" "+villain.give_artifact().get_type()+" "+villain.give_artifact().get_name()+
+            " with the stats "+ANSI_GREEN+villain.give_artifact().get_stats()+ANSI_RESET+
+            "\n"+ANSI_PURPLE+"Available commands: to USE, COMPARE or LEAVE"+ANSI_RESET);
+            switch(gameinput.nextLine().toUpperCase()){
+                case "USE":
+                    switch(villain.give_artifact().get_type()){
+                        case "Weapon":
+                            hero.set_weapon((Weapon)villain.give_artifact());
+                            break;
+                        case "Armor":
+                            hero.set_armor((Armor)villain.give_artifact());
+                            break;
+                        case "Helm":
+                            hero.set_helm((Helm)villain.give_artifact());
+                            break;
+                    }
+                    artifact = false;
+                    break;
+                case "COMPARE":
+                    gameview.consolelog("YOU HAVE:");
+                    switch(villain.give_artifact().get_type()){
+                        case "Weapon":
+                            gameview.hero_weapon(hero);
+                            break;
+                        case "Armor":
+                            gameview.hero_armor(hero);
+                            break;
+                        case "Helm":
+                            gameview.hero_helm(hero);
+                            break;
+                    }
+                    break;
+                case "LEAVE":
+                    artifact = false;
+                    break;
+            }
+        }
+    }
+
+    private void checkartifact(){
+        if (villain.give_artifact() != null){
+            Random rand = new Random();
+            if (rand.nextBoolean() == true){
+                artifact = true;
+            }
+        }
+    }
+
+    private void fightwon(Game gameview){
+        int xpgained = villain.get_level() * 200;
+        map.killvillain(gameview);
+        if (gameGuiView == null)
+            gameview.consolelog(ANSI_YELLOW+"You won the FIGHT with "+ANSI_GREEN+hero.get_lastfighthp()+" / "+hero.get_hitpoints()+ANSI_YELLOW+" hp remaining! you have gained "+ANSI_GREEN+xpgained+ANSI_YELLOW+" XP"+ANSI_RESET);
+        else 
+            gameview.consolelog("You won the FIGHT with "+hero.get_lastfighthp()+" / "+hero.get_hitpoints()+" hp remaining! you have gained "+xpgained+" XP");
+
+        if (hero.getxp(xpgained) == true){
+            gameview.consolelog("YOU LEVELED UP TO LV "+hero.get_level()+"!");
+        }
+    }
+
+    private void fightlost(Game gameview){
+        int xplost = hero.get_experience() / 2;
+        if (gameGuiView == null)
+            gameview.consolelog(ANSI_RED+"YOU DIED | you lost "+ xplost +" xp"+ANSI_RESET);
+        else
+            gameview.consolelog("YOU DIED | you lost "+ xplost +" xp");
+        hero.set_experience(xplost);
+        map.generatenewmap(hero, gameview);
+    }
+
+    private void run(Game gameview){
+        gameview.consolelog("you decide try and run from the villain");
+
+        Random rand = new Random();
+        if (rand.nextBoolean() == true){
+            gameview.consolelog("turns out you ran away just fine");
+            map.ranaway();
+        } else {
+            if (gameGuiView == null)
+                gameview.consolelog(ANSI_RED+"Your attempt to RUN away FAILED. Now you have to FIGHT!"+ANSI_RESET);
+            else
+                gameview.consolelog("Your attempt to RUN away FAILED. Now you have to FIGHT!");
+            fight(gameview);
+        }
+        conflict = false;
+    }
+
+    private void checkevent(Game gameview){
+        villain = (Villain)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][0];
+        hero = (Hero)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][1];
         if (villain != null && hero != null){
             gameview.consolelog(ANSI_RED+"A WILD LV "+villain.get_level()+" "+villain.get_class()+" "+villain.get_name()+" APPEARS. do you FIGHT OR RUN?"+ANSI_RESET);
             gameview.consolelog(ANSI_PURPLE+"Available commands: FIGHT, RUN, HERO STATS and VILLAIN STATS"+ANSI_RESET);
-            
-            boolean conflict = true;
+            conflict = true;            
             while (conflict){
-                int fight = 2;
+                fight = 2;
                 switch (gameinput.nextLine().toUpperCase()) {
                     case "FIGHT":
-                        gameview.consolelog("you decide fight the villain");
-                        startfight(hero, villain);
-                        fight = startfight(hero, villain);
-                        conflict = false;
+                        fight(gameview);
                         break;
                     case "RUN":
-                        gameview.consolelog("you decide try and run from the villain");
-
-                        Random rand = new Random();
-                        if (rand.nextBoolean() == true){
-                            gameview.consolelog("turns out you ran away just fine");
-                            map.ranaway();
-                        } else {
-                            gameview.consolelog(ANSI_RED+"Your attempt to RUN away FAILED. Now you have to FIGHT!"+ANSI_RESET);
-                            fight = startfight(hero, villain);
-                        }
-                        conflict = false;
+                        run(gameview);
                         break;
                     case "VILLAIN STATS":
                         gameview.villain_stats(villain);
@@ -111,63 +227,12 @@ public class GameEngine{
                         break;
                 }
                 if (fight == 1){
-                    
-                    if (villain.give_artifact() != null){
-                        Random rand = new Random();
-                        if (rand.nextBoolean() == true){
-                            boolean artifact = true;
-                            while (artifact){
-                                gameview.consolelog(villain.get_name()+
-                                " has dropped a level "+ANSI_GREEN+villain.give_artifact().get_level()+ANSI_RESET+" "+villain.give_artifact().get_type()+" "+villain.give_artifact().get_name()+
-                                " with the stats "+ANSI_GREEN+villain.give_artifact().get_stats()+ANSI_RESET+
-                                "\n"+ANSI_PURPLE+"Available commands: to USE, COMPARE or LEAVE"+ANSI_RESET);
-                                switch(gameinput.nextLine().toUpperCase()){
-                                    case "USE":
-                                        switch(villain.give_artifact().get_type()){
-                                            case "Weapon":
-                                                hero.set_weapon((Weapon)villain.give_artifact());
-                                                break;
-                                            case "Armor":
-                                                hero.set_armor((Armor)villain.give_artifact());
-                                                break;
-                                            case "Helm":
-                                                hero.set_helm((Helm)villain.give_artifact());
-                                                break;
-                                        }
-                                        artifact = false;
-                                        break;
-                                    case "COMPARE":
-                                        gameview.consolelog("YOU HAVE:");
-                                        switch(villain.give_artifact().get_type()){
-                                            case "Weapon":
-                                                gameview.hero_weapon(hero);
-                                                break;
-                                            case "Armor":
-                                                gameview.hero_armor(hero);
-                                                break;
-                                            case "Helm":
-                                                gameview.hero_helm(hero);
-                                                break;
-                                        }
-                                        break;
-                                    case "LEAVE":
-                                        artifact = false;
-                                        break;
-                                }
-                            }
-                        }
-                    }
-                    int xpgained = villain.get_level() * 200;
-                    map.killvillain(gameview);
-                    gameview.consolelog(ANSI_YELLOW+"You won the FIGHT with "+ANSI_GREEN+hero.get_lastfighthp()+" / "+hero.get_hitpoints()+ANSI_YELLOW+" hp remaining! you have gained "+ANSI_GREEN+xpgained+ANSI_YELLOW+" XP"+ANSI_RESET);
-                    if (hero.getxp(xpgained) == true){
-                        gameview.consolelog("YOU LEVELED UP TO LV "+hero.get_level()+"!");
-                    }
+                    checkartifact();
+                    if (artifact)
+                        artifactdrop(gameview);
+                    fightwon(gameview);
                 } else if (fight == 0) {
-                    int xplost = hero.get_experience() / 2;
-                    gameview.consolelog(ANSI_RED+"YOU DIED | you lost "+ xplost +" xp"+ANSI_RESET);
-                    hero.set_experience(xplost);
-                    map.generatenewmap(hero, gameview);
+                    fightlost(gameview);
                 }
             }
         } if (map.get_Hero_xlocation() == 0 || map.get_Hero_xlocation() == (map.get_mapsize() - 1) || map.get_Hero_ylocation() == 0 || map.get_Hero_ylocation() == (map.get_mapsize() - 1)){
@@ -205,12 +270,7 @@ public class GameEngine{
     }
 
     public Hero loadheroselected(String filenames[] ,int selected, int line, Game gameview){
-        for (String var : filenames) {
-            System.out.println("name"+var);
-        }
-        System.out.println("selected :"+selected);
         try{
-            
                     BufferedReader br = new BufferedReader(new FileReader("src/main/java/com/swingy/model/heroes/"+filenames[selected]));
                     String name = br.readLine().split(" ")[1];
                     System.out.println("name is :" +name);
@@ -322,6 +382,7 @@ public class GameEngine{
         }
         return null;
     }
+    
     public Hero makeHero(Game gameview){
         @Size(min = 4, max = 20, message = "Heroes have names with 1 - 20 characters") String name = null;
         String tempname = null;
@@ -354,63 +415,9 @@ public class GameEngine{
         return new Hero(name, char_class);
     }
 
-    
-    
-    public void rungamegui(Game gameview, Hero hero){
-        Map map = new Map();
-        map.generatenewmap(hero, gameview);
-        updatemapview(gameview, map);
-        while (game){
-            
-            gameview.consolelog(ANSI_PURPLE+"Available commands: MAP, MOVE, HERO, CLEAR, SAVE, LOAD, NEW HERO AND QUIT"+ANSI_RESET);
-            switch (gameinput.nextLine().toUpperCase()) {
-                case "MAP":
-                    updatemapview(gameview, map);
-                    break;
-                case "MOVE":
-                    gameview.consolelog("Choose direction [NORTH, EAST, SOUTH, WEST]");
-                    map.movehero(gameinput.nextLine(), gameview);
-                    checkevent(map, gameview);
-                    break;
-                case "HERO":
-                    gameview.hero_stats((Hero)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][1]);
-                    break;
-                case "QUIT":
-                    game = false;
-                    savehero((Hero)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][1]);
-                    gameview.consolelog("Hero "+hero.get_name()+" saved");
-                    break;
-                case "CLEAR":
-                    System.out.print("\033[H\033[2J");  
-                    System.out.flush();
-                    break;
-                case "SAVE":
-                    savehero((Hero)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][1]);
-                    gameview.consolelog("Hero "+hero.get_name()+" saved");
-                    break;
-                case "LOAD":
-                    Hero temphero = loadhero(map, gameview);
-                    if (temphero != null){
-                        map.generatenewmap(temphero, gameview);
-                        temphero = null;
-                    }
-                    break;
-                case "NEW HERO":
-                    map.generatenewmap(makeHero(gameview), gameview);
-                    break;
-                default:
-                    gameview.consolelog("Invalid command");
-                    break;
-           }
-           
-        }
-        gameview.consolelog("-_-[GAME OVER]-_-");
-    }
-
     public void makeorloadhero(){
         boolean select = false;
-        Hero hero = null;
-        Map gamemap = new Map();
+        map = new Map();
         Game gameview = new GameView();
         while (select == false)
         {
@@ -421,7 +428,7 @@ public class GameEngine{
                     select = true;
                     break;
                 case "LOAD HERO":
-                    hero = loadhero(gamemap, gameview);
+                    hero = loadhero(map, gameview);
                     if (hero == null){
                         gameview.consolelog("It seems like you dont have a hero, you need a hero to go on adventures friend. Let us make one.");
                         hero = makeHero(gameview);
@@ -432,10 +439,10 @@ public class GameEngine{
                 gameview.consolelog("invalid command");
             }
         }
-        rungame(gameview, gamemap, hero);;
+        rungame(gameview);;
     }
 
-    public void rungame(Game gameview, Map map, Hero hero){
+    public void rungame(Game gameview){
         map.generatenewmap(hero, gameview);
         updatemapview(gameview, map);
         while (game){
@@ -447,8 +454,8 @@ public class GameEngine{
                     break;
                 case "MOVE":
                     gameview.consolelog("Choose direction [NORTH, EAST, SOUTH, WEST]");
-                    map.movehero(gameinput.nextLine(), gameview);
-                    checkevent(map, gameview);
+                    movehero(gameinput.nextLine(), gameview);
+                    checkevent(gameview);
                     break;
                 case "HERO":
                     gameview.hero_stats((Hero)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][1]);
@@ -491,6 +498,8 @@ public class GameEngine{
         initview();
     }
 
+    
+
     public void initview(){
         
         gameGuiView.getSavegame().addActionListener(new ActionListener(){
@@ -502,7 +511,7 @@ public class GameEngine{
                 
                 gameGuiView.getDismiss().addActionListener(new ActionListener(){
                     public void actionPerformed(ActionEvent e){
-                        gameGuiView.getSavegame().setVisible(false);
+                        gameGuiView.getGamesaved().setVisible(false);
                     }
                 });
                 gameGuiView.getGamesaved().add(gameGuiView.getMessage());
@@ -516,20 +525,17 @@ public class GameEngine{
                 try {
                     if (gameGuiView.getHeroeslist().getSelectedValue().equals("") || gameGuiView.getHeroeslist().getSelectedValue().equals(null)){
                         gameGuiView.getLoadlable().setText("[A QUEST WIHOUT A HERO? no...PLEASE CHOOSE A HERO]");
-                        System.out.println("op = A");
                     } else {
                         gameGuiView.getLoadheroDialog().setVisible(false);
                         // 0 is in place instead of a line int because im too lazy to integrate the line issue
-                        System.out.println("op = B "+gameGuiView.getHeroeslist().getSelectedValue()+" - "+null);
-                        map.generatenewmap(loadheroselected(gameGuiView.getFilenames(), Integer.parseInt(gameGuiView.getHeroeslist().getSelectedValue()), 0, gameGuiView), gameGuiView);
+                        Hero h = loadheroselected(gameGuiView.getFilenames(), gameGuiView.getHeroeslist().getSelectedIndex(), 0, gameGuiView);
+                        System.out.println("Hero Made");                    
+                        map.generatenewmap(h, gameGuiView);
                     }
-                    System.out.println("op = C");    
                 } catch(NullPointerException exception){
-                    System.out.println("op = D");
                     gameGuiView.getLoadlable().setText("[A QUEST WIHOUT A HERO? no...PLEASE CHOOSE A HERO]");
                 } catch (Exception exception) {
-                    System.out.println("op = E");
-                    System.out.println("big boo boo "+exception.getMessage());
+                    System.out.println("big boo boo - "+exception.getMessage());
                 }
             }
         });
@@ -573,6 +579,193 @@ public class GameEngine{
             }
         });
 
+        gameGuiView.getHeroButton().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                gameGuiView.hero_stats((Hero)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][1]);
+            }
+        });
+
+        gameGuiView.getVilButton().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                if (villain != null){
+                    gameGuiView.villain_stats((Villain)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][0000]);
+                } else if (artifact){
+                    gameGuiView.consolelog("Available commands: to USE, COMPARE or LEAVE");
+                } 
+            }
+        });
+
+        gameGuiView.getMapButton().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                updatemapview(gameGuiView, map);
+            }
+        });
+
+        gameGuiView.getClearButton().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                gameGuiView.getGuiconsole().setText("CLEARED\n");
+            }
+        });
+
+        // -------------- MOVEMENT LISTNERS --------------- //
+        gameGuiView.getMoveButtonN().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                if (!conflict && !artifact){
+                    movehero("NORTH", gameGuiView);
+                    checkconflict(gameGuiView);
+                } else if (conflict){
+                    gameGuiView.consolelog("Available commands: FIGHT, RUN, HERO STATS and VILLAIN STATS");
+                } else if (artifact) {
+                    gameGuiView.consolelog("Available commands: to USE, COMPARE or LEAVE");
+                }
+            }
+        });
+        gameGuiView.getMoveButtonS().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                if (!conflict && !artifact){
+                    movehero("SOUTH", gameGuiView);
+                    checkconflict(gameGuiView);
+                } else if (conflict){
+                    gameGuiView.consolelog("Available commands: FIGHT, RUN, HERO STATS and VILLAIN STATS");
+                } else if (artifact) {
+                    gameGuiView.consolelog("Available commands: to USE, COMPARE or LEAVE");
+                }
+            }
+        });
+        gameGuiView.getMoveButtonW().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                if (!conflict && !artifact){
+                    movehero("WEST", gameGuiView);
+                    checkconflict(gameGuiView);
+                } else if (conflict){
+                    gameGuiView.consolelog("Available commands: FIGHT, RUN, HERO STATS and VILLAIN STATS");
+                } else if (artifact) {
+                    gameGuiView.consolelog("Available commands: to USE, COMPARE or LEAVE");
+                }
+            }
+        });
+        gameGuiView.getMoveButtonE().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                if (!conflict && !artifact){
+                    movehero("EAST", gameGuiView);
+                    checkconflict(gameGuiView);
+                } else if (conflict){
+                    gameGuiView.consolelog("Available commands: FIGHT, RUN, HERO STATS and VILLAIN STATS");
+                } else if (artifact) {
+                    gameGuiView.consolelog("Available commands: to USE, COMPARE or LEAVE");
+                }
+            }
+        });
+        gameGuiView.getFightButton().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                if (conflict){
+                    fight(gameGuiView);
+                    if (fight == 1){
+                        fightwon(gameGuiView);
+                        checkartifact();
+                        if (artifact){
+                            gameGuiView.consolelog(villain.get_name()+
+                            " has dropped a level "+villain.give_artifact().get_level()+" "+villain.give_artifact().get_type()+" "+villain.give_artifact().get_name()+
+                            " with the stats "+villain.give_artifact().get_stats()+"\nAvailable commands: to USE, COMPARE or LEAVE");
+                        }
+                    } else {
+                        fightlost(gameGuiView);
+                    }
+                } else if (artifact){
+                    gameGuiView.consolelog("Available commands: to USE, COMPARE or LEAVE");
+                } else {
+                    gameGuiView.consolelog("Nothing to fight... yet");
+                }
+            }
+        });
+
+        gameGuiView.getRunButton().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                if (conflict){
+                    run(gameGuiView);
+                    if (fight == 0) {
+                        fightlost(gameGuiView);
+                    }
+                } else if (artifact){
+                    gameGuiView.consolelog("Available commands: to USE, COMPARE or LEAVE");
+                } else {
+                    gameGuiView.consolelog("Nothing to run from... yet");
+                }
+            }
+        });
+
+        gameGuiView.getUseButton().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                if (artifact){
+                    switch(villain.give_artifact().get_type()){
+                        case "Weapon":
+                            hero.set_weapon((Weapon)villain.give_artifact());
+                            break;
+                        case "Armor":
+                            hero.set_armor((Armor)villain.give_artifact());
+                            break;
+                        case "Helm":
+                            hero.set_helm((Helm)villain.give_artifact());
+                            break;
+                    }
+                    artifact = false;
+                    gameGuiView.consolelog("You equiped it");
+                } else if (conflict){
+                    gameGuiView.consolelog("Available commands: FIGHT, RUN, HERO STATS and VILLAIN STATS");
+                } else {
+                    gameGuiView.consolelog("Nothing to use");
+                }
+            }
+        });
+
+        gameGuiView.getCompareButton().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                if (artifact){
+                    gameGuiView.consolelog("YOU HAVE:");
+                    switch(villain.give_artifact().get_type()){
+                        case "Weapon":
+                            gameGuiView.hero_weapon(hero);
+                            break;
+                        case "Armor":
+                            gameGuiView.hero_armor(hero);
+                            break;
+                        case "Helm":
+                            gameGuiView.hero_helm(hero);
+                            break;
+                    }
+                } else if (conflict){
+                    gameGuiView.consolelog("Available commands: FIGHT, RUN, HERO STATS and VILLAIN STATS");
+                } else {
+                    gameGuiView.consolelog("Nothing to compare");
+                }
+            }
+        });
+
+        gameGuiView.getLeaveButton().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                if (artifact){
+                    gameGuiView.consolelog("You left it");
+                    artifact = false;
+                } else if (conflict){
+                    gameGuiView.consolelog("Available commands: FIGHT, RUN, HERO STATS and VILLAIN STATS");
+                } else {
+                    gameGuiView.consolelog("Nothing to leave");
+                }
+            }
+        });
+        
+    }
+
+    public void checkconflict(Game gameView){
+        villain = (Villain)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][0];
+        hero = (Hero)map.getMap()[map.get_Hero_ylocation()][map.get_Hero_xlocation()][1];
+        if (villain != null && hero != null){
+            gameView.consolelog("A WILD LV "+villain.get_level()+" "+villain.get_class()+" "+villain.get_name()+" APPEARS. do you FIGHT OR RUN?");
+            gameView.consolelog("Available commands: FIGHT, RUN, HERO STATS and VILLAIN STATS");
+            conflict = true;
+        } else {
+            conflict = false;
+        }
     }
 
 }
