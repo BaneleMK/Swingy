@@ -1,8 +1,8 @@
 Name: meoth
 Class: poke
-Level: 1
-XP: 400 / 1000
-Hitpoints: 50
+Level: 2
+XP: 250 / 2450
+Hitpoints: 60
 Attack: 5
 defense: 0
 Weapon: N/A

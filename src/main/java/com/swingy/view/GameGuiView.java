@@ -12,7 +12,8 @@ import com.swingy.model.*;
 
 public class GameGuiView implements Game{
 
-    private JFrame frame = new JFrame("Swingy");
+    private boolean hero_present = false;
+    private JFrame frame = new JFrame("Swingy"); 
 
     private JButton btnewhero = new JButton("New Hero");
     private JButton bloadhero = new JButton("Load Hero");
@@ -191,6 +192,7 @@ public class GameGuiView implements Game{
                 // System.out.println(list.get(i));
             }
             heroeslist = new JList<>(list);
+            loadheroDialog.add(heroeslist);
         } else if (filenames.length == 0) {
             System.out.println("HELLO NO HEROES IN THIS WORLD");
         } else {
@@ -198,7 +200,6 @@ public class GameGuiView implements Game{
         }
 
         
-        loadheroDialog.add(heroeslist);
         loadheroDialog.add(loadlable);
         loadheroDialog.setLayout(new FlowLayout());
     }
@@ -514,4 +515,18 @@ public class GameGuiView implements Game{
     public JScrollPane getGuiscroll() {
         return guiscroll;
     }
+    /**
+    * @return the hero_present
+    */
+   public boolean getHero_present() {
+       return hero_present;
+   }
+   /**
+    * @param hero_present the hero_present to set
+    */
+   public void setHero_present(boolean hero_present) {
+       this.hero_present = hero_present;
+   }
+
+    
 }

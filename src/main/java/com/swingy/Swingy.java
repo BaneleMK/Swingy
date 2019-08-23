@@ -13,12 +13,10 @@ public final class Swingy {
      */
     public static void main(String[] args) {
         if (args.length == 1){
-            GameEngine gameEngine;
+            GameEngine gameEngine = new GameEngine();
             if (args[0].equals("console")){
-                gameEngine = new GameEngine();
                 gameEngine.makeorloadhero();
             } else if (args[0].equals("gui")){
-                gameEngine = new GameEngine();
                 GameGuiView GameGuiView = new GameGuiView();
                 gameEngine.GUIcontoller(GameGuiView);
             } else {
