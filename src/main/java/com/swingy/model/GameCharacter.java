@@ -1,5 +1,8 @@
 package com.swingy.model;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 /*
 static class Class_Varables{
     Class_Varables getClass_Varable = Class_Varables();
@@ -12,6 +15,8 @@ static class Class_Varables{
 
 public abstract class GameCharacter{
 
+    @NotNull 
+    @Size(min=4, max=30)
     protected String _name;
     protected String _class;
     protected int _level;

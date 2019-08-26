@@ -13,9 +13,8 @@ import java.awt.*;
 import java.awt.event.*;
 
 import javax.management.RuntimeErrorException;
-//import javax.validation.constraints.NotBlank;
-//import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.validation.constraints.NotNull;
 
 /**
  * GameEngine
@@ -35,8 +34,8 @@ public class GameEngine{
     static boolean conflict = false;
     static boolean artifact = false;
     static int fight = 2;
-    Villain villain = null;
-    Hero hero = null;
+    @NotNull Villain villain = null;
+    @NotNull Hero hero = null;
 
     static Scanner gameinput = new Scanner(System.in);
     static boolean game = true;
@@ -389,23 +388,23 @@ public class GameEngine{
     }
     
     public Hero makeHero(Game gameview){
-        @Size(min = 4, max = 20, message = "Heroes have names with 1 - 20 characters") String name = null;
-        String tempname = null;
         String char_class = null;
-        while (name == "" || name == null){
+        @NotNull
+        @Size(min = 4, max = 20, message = "Heroes have names with 1 - 20 characters")
+        String tname = null;
+        while (tname == "" || tname == null){
             gameview.consolelog("[NAME YOUR HERO]");
-            tempname = gameinput.nextLine();
-            name = tempname;
-            if (name.contains(" ") || name.equals("")){
+            tname = gameinput.nextLine();
+            if (tname.contains(" ") || tname.equals("")){
                 gameview.consolelog("[HERO NAMES DONT HAVE SPACES INSIDE AND ARE NOT BLANK]");
-                name = null;
-            } else if (name.equals("Rodger")){
+                tname = null;
+            } else if (tname.equals("Rodger")){
                 gameview.consolelog(ANSI_PURPLE+"RODGER IS MY HERO"+ANSI_RESET);
-            } else if (name.equals("Shroud")){
+            } else if (tname.equals("Shroud")){
                 gameview.consolelog(ANSI_PURPLE+"THE KING OF REDDIT"+ANSI_RESET);
-            } else if (name.equals("null")){
+            } else if (tname.equals("null")){
                 gameview.consolelog(ANSI_RED+"haha, not funny. no really this almost broke it, do it again and do it right"+ANSI_RESET);
-                name = null;
+                tname = null;
             }
 
         }
@@ -417,7 +416,7 @@ public class GameEngine{
                 char_class = null;
             }
         }
-        return new Hero(name, char_class);
+        return new Hero(tname, char_class);
     }
 
     public void makeorloadhero(){
