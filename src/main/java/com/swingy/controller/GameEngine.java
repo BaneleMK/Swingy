@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.File;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
 
 import com.swingy.SaveHero;
 import com.swingy.model.*;
@@ -13,9 +14,11 @@ import java.awt.*;
 import java.awt.event.*;
 
 import javax.management.RuntimeErrorException;
-import javax.validation.constraints.Size;
-import javax.validation.constraints.NotNull;
+import javax.validation.ConstraintViolation;
 
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 /**
  * GameEngine
  */
@@ -34,8 +37,8 @@ public class GameEngine{
     static boolean conflict = false;
     static boolean artifact = false;
     static int fight = 2;
-    @NotNull Villain villain = null;
-    @NotNull Hero hero = null;
+    Villain villain = null;
+    Hero hero = null;
 
     static Scanner gameinput = new Scanner(System.in);
     static boolean game = true;
@@ -389,34 +392,50 @@ public class GameEngine{
     
     public Hero makeHero(Game gameview){
         String char_class = null;
-        @NotNull
-        @Size(min = 4, max = 20, message = "Heroes have names with 1 - 20 characters")
         String tname = null;
-        while (tname == "" || tname == null){
-            gameview.consolelog("[NAME YOUR HERO]");
-            tname = gameinput.nextLine();
-            if (tname.contains(" ") || tname.equals("")){
-                gameview.consolelog("[HERO NAMES DONT HAVE SPACES INSIDE AND ARE NOT BLANK]");
-                tname = null;
-            } else if (tname.equals("Rodger")){
-                gameview.consolelog(ANSI_PURPLE+"RODGER IS MY HERO"+ANSI_RESET);
-            } else if (tname.equals("Shroud")){
-                gameview.consolelog(ANSI_PURPLE+"THE KING OF REDDIT"+ANSI_RESET);
-            } else if (tname.equals("null")){
-                gameview.consolelog(ANSI_RED+"haha, not funny. no really this almost broke it, do it again and do it right"+ANSI_RESET);
-                tname = null;
+        Hero temphero = null;
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        try {
+            while (tname == "" || tname == null){
+                gameview.consolelog("[NAME YOUR HERO]");
+                tname = gameinput.nextLine();
+                
+                if (tname.contains(" ") || tname.equals("")){
+                    gameview.consolelog("[HERO NAMES DONT HAVE SPACES INSIDE AND ARE NOT BLANK]");
+                    tname = null;
+                } else if (tname.equals("Rodger")){
+                    gameview.consolelog(ANSI_PURPLE+"RODGER IS MY HERO"+ANSI_RESET);
+                } else if (tname.equals("Shroud")){
+                    gameview.consolelog(ANSI_PURPLE+"THE KING OF REDDIT"+ANSI_RESET);
+                } else if (tname.equals("null")){
+                    gameview.consolelog(ANSI_RED+"haha, not funny. no really this almost broke it, do it again and do it right"+ANSI_RESET);
+                    tname = null;
+                }
+    
             }
+            while (char_class == "" || char_class == null){
+                gameview.consolelog("[GIVE YOUR HERO A CLASS]");
+                char_class = gameinput.nextLine();
+                if (char_class.contains(" ")){
+                    gameview.consolelog("[HERO CLASSES NAMES DONT HAVE SPACES INSIDE]");
+                    char_class = null;
+                }
+            }
+            temphero = new Hero(tname, char_class);
+            Set<ConstraintViolation<Hero>> violations = validator.validate(temphero);
+            for (ConstraintViolation<Hero> violation : violations){
+                gameview.consolelog(violation.getMessage());
+            }
+            return temphero;
+        } catch (NoClassDefFoundError e){
+            gameview.consolelog(ANSI_RED+"No Class Def Found Error issues:\n"+e.getMessage()+ANSI_RESET);
+            return makeHero(gameview);
+        } catch (Exception e) {
+            gameview.consolelog(ANSI_RED+"name issues"+ANSI_RESET);
+            return makeHero(gameview);
+        }
 
-        }
-        while (char_class == "" || char_class == null){
-            gameview.consolelog("[GIVE YOUR HERO A CLASS]");
-            char_class = gameinput.nextLine();
-            if (char_class.contains(" ")){
-                gameview.consolelog("[HERO CLASSES NAMES DONT HAVE SPACES INSIDE]");
-                char_class = null;
-            }
-        }
-        return new Hero(tname, char_class);
     }
 
     public void makeorloadhero(){
