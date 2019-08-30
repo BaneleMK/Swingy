@@ -69,7 +69,13 @@ public class Map {
 
 
     public void generatenewmap(GameCharacter hero, Game GameView){
-        _mapsize = (hero.get_level()-1)*5+10-(hero.get_level()%2);
+        int herolevel = hero.get_level();
+        if (herolevel > 10){
+            herolevel = 10;
+        }
+
+        // capping the size of the map to level 10 for evaluation it should be fine
+        _mapsize = (herolevel-1)*5+10-(herolevel%2);
         GameView.consolelog("Making map of size "+_mapsize);
         
         // init map 
