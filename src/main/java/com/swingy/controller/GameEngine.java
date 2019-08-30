@@ -1,24 +1,29 @@
 package com.swingy.controller;
 
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.File;
+import java.io.FileReader;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.Set;
 
 import com.swingy.SaveHero;
-import com.swingy.model.*;
-import com.swingy.view.*;
-import java.awt.*;
-import java.awt.event.*;
+import com.swingy.model.Armor;
+import com.swingy.model.Helm;
+import com.swingy.model.Hero;
+import com.swingy.model.LootTable;
+import com.swingy.model.Map;
+import com.swingy.model.Villain;
+import com.swingy.model.Weapon;
+import com.swingy.view.Game;
+import com.swingy.view.GameGuiView;
+import com.swingy.view.GameView;
 
 import javax.management.RuntimeErrorException;
-import javax.validation.ConstraintViolation;
-
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 /**
  * GameEngine
  */
@@ -280,7 +285,6 @@ public class GameEngine{
         try{
                     BufferedReader br = new BufferedReader(new FileReader("src/main/java/com/swingy/model/heroes/"+filenames[selected]));
                     String name = br.readLine().split(" ")[1];
-                    System.out.println("name is :" +name);
                     line++;
                     String char_class = br.readLine().split(" ")[1];
                     line++;
@@ -393,48 +397,31 @@ public class GameEngine{
     public Hero makeHero(Game gameview){
         String char_class = null;
         String tname = null;
-        Hero temphero = null;
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-        try {
-            while (tname == "" || tname == null){
-                gameview.consolelog("[NAME YOUR HERO]");
-                tname = gameinput.nextLine();
-                
-                if (tname.contains(" ") || tname.equals("")){
-                    gameview.consolelog("[HERO NAMES DONT HAVE SPACES INSIDE AND ARE NOT BLANK]");
-                    tname = null;
-                } else if (tname.equals("Rodger")){
-                    gameview.consolelog(ANSI_PURPLE+"RODGER IS MY HERO"+ANSI_RESET);
-                } else if (tname.equals("Shroud")){
-                    gameview.consolelog(ANSI_PURPLE+"THE KING OF REDDIT"+ANSI_RESET);
-                } else if (tname.equals("null")){
-                    gameview.consolelog(ANSI_RED+"haha, not funny. no really this almost broke it, do it again and do it right"+ANSI_RESET);
-                    tname = null;
-                }
-    
-            }
-            while (char_class == "" || char_class == null){
-                gameview.consolelog("[GIVE YOUR HERO A CLASS]");
-                char_class = gameinput.nextLine();
-                if (char_class.contains(" ")){
-                    gameview.consolelog("[HERO CLASSES NAMES DONT HAVE SPACES INSIDE]");
-                    char_class = null;
-                }
-            }
-            temphero = new Hero(tname, char_class);
-            Set<ConstraintViolation<Hero>> violations = validator.validate(temphero);
-            for (ConstraintViolation<Hero> violation : violations){
-                gameview.consolelog(violation.getMessage());
-            }
-            return temphero;
-        } catch (NoClassDefFoundError e){
-            gameview.consolelog(ANSI_RED+"No Class Def Found Error issues:\n"+e.getMessage()+ANSI_RESET);
-            return makeHero(gameview);
-        } catch (Exception e) {
-            gameview.consolelog(ANSI_RED+"name issues"+ANSI_RESET);
-            return makeHero(gameview);
+        while (tname == "" || tname == null){
+            gameview.consolelog("[NAME YOUR HERO]");
+            tname = gameinput.nextLine();
+            
+            if (tname.contains(" ") || tname.equals("")){
+                gameview.consolelog("[HERO NAMES DONT HAVE SPACES INSIDE AND ARE NOT BLANK]");
+                tname = null;
+            } else if (tname.equals("Rodger")){
+            gameview.consolelog(ANSI_PURPLE+"RODGER IS MY HERO"+ANSI_RESET);
+        } else if (tname.equals("Shroud")){
+            gameview.consolelog(ANSI_PURPLE+"THE KING OF REDDIT"+ANSI_RESET);
+        } else if (tname.equals("null")){
+            gameview.consolelog(ANSI_RED+"haha, not funny. no really this almost broke it, do it again and do it right"+ANSI_RESET);
+            tname = null;
         }
+        }
+        while (char_class == "" || char_class == null){
+            gameview.consolelog("[GIVE YOUR HERO A CLASS]");
+            char_class = gameinput.nextLine();
+            if (char_class.contains(" ")){
+                gameview.consolelog("[HERO CLASSES NAMES DONT HAVE SPACES INSIDE]");
+                char_class = null;
+            }
+        }
+        return new Hero(tname, char_class);
 
     }
 
@@ -521,8 +508,6 @@ public class GameEngine{
         initview();
     }
 
-    
-
     public void initview(){
         
         gameGuiView.getSavegame().addActionListener(new ActionListener(){
@@ -559,6 +544,7 @@ public class GameEngine{
                         gameGuiView.consolelog("Hero Made");                    
                         map.generatenewmap(h, gameGuiView);
                         gameGuiView.setHero_present(true);
+                        gameGuiView.getLoadlable().setText("");
                     }
                 } catch(NullPointerException exception){
                     gameGuiView.getLoadlable().setText("[A QUEST WIHOUT A HERO? no...PLEASE CHOOSE A HERO]");
@@ -606,6 +592,44 @@ public class GameEngine{
                     map.generatenewmap(new Hero(gameGuiView.getNametextfield().getText(), gameGuiView.getClasstextfield().getText()), gameGuiView);
                     gameGuiView.setHero_present(true);
                 }
+            }
+        });
+
+        gameGuiView.getFrame().addWindowListener(new WindowListener(){
+            @Override
+            public void windowClosing(WindowEvent windowEvent){
+                savehero(hero, gameGuiView);
+                System.exit(0);
+            }
+
+            @Override
+            public void windowOpened(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+
             }
         });
 

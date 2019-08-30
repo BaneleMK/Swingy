@@ -194,12 +194,12 @@ public class GameGuiView implements Game{
             heroeslist = new JList<>(list);
             loadheroDialog.add(heroeslist);
         } else if (filenames.length == 0) {
-            System.out.println("HELLO NO HEROES IN THIS WORLD");
+            loadlable.setText("HELLO NO SAVED HEROES IN THIS WORLD");
         } else {
-            System.out.println("SELECT SOMETHING PLEASE");
+            loadlable.setText("SELECT SOMETHING PLEASE");
         }
 
-        
+        loadheroDialog.add(loadlable);
         loadheroDialog.add(loadlable);
         loadheroDialog.setLayout(new FlowLayout());
     }
@@ -218,7 +218,8 @@ public class GameGuiView implements Game{
         frame.setJMenuBar(gameoptions);
 
         // setting close operation
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   
         // sets 800 width and 800 height 
         frame.setSize(800, 800);

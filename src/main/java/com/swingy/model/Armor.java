@@ -1,9 +1,18 @@
 package com.swingy.model;
 
+import javax.validation.constraints.NotNull;
+
 public class Armor implements Artifact {
+    
+    @NotNull
     private String _name;
+
+    @NotNull
     private int _defense;
+    
     private String _type = "Armor";
+    
+    @NotNull
     private int _level;
 
     public Armor(String name, int defense, int level){

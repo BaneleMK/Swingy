@@ -1,9 +1,9 @@
 Name: me
 Class: you
-Level: 2
-XP: 600 / 2450
-Hitpoints: 85
-Attack: 50
+Level: 3
+XP: 150 / 4800
+Hitpoints: 100
+Attack: 65
 defense: 0
 Weapon: LV 2 Stark_Blade + 15 ATK
 Armor: N/A

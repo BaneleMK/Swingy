@@ -1,10 +1,10 @@
 Name: sfer
 Class: weeb
 Level: 1
-XP: 200 / 1000
+XP: 400 / 1000
 Hitpoints: 40
-Attack: 5
+Attack: 15
 defense: 0
-Weapon: N/A
+Weapon: LV 1 Stark_Blade + 10 ATK
 Armor: N/A
 Helm: N/A

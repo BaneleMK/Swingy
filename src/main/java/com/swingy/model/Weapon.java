@@ -1,10 +1,18 @@
 package com.swingy.model;
 
+import javax.validation.constraints.NotNull;
+
 public class Weapon implements Artifact{
 
+    @NotNull
     private String _name;
+
+    @NotNull
     private int _attack;
+    
     private String _type = "Weapon";
+
+    @NotNull
     private int _level;
 
     public Weapon(String name, int attack, int level){

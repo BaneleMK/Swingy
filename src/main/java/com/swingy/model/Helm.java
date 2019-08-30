@@ -1,9 +1,18 @@
 package com.swingy.model;
 
+import javax.validation.constraints.NotNull;
+
 public class Helm implements Artifact {
+    
+    @NotNull
     private String _name;
+
+    @NotNull
     private int _hitpoints;
+
     private String _type = "Helm";
+
+    @NotNull
     private int _level;
 
     public Helm(String name, int hitpoints, int level){
