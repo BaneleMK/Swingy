@@ -1,0 +1,10 @@
+Name: KAYAGA
+Class: SAMURAI
+Level: 3
+XP: 150 / 4800
+Hitpoints: 50
+Attack: 20
+defense: 3
+Weapon: LV 2 Stark_Blade + 15 ATK
+Armor: LV 2 Armor_of_Truth + 3 DEF
+Helm: LV 1 Stark_helm + 10 HP
