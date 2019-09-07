@@ -1,7 +1,7 @@
 package com.swingy.model;
 
 import javax.validation.constraints.NotNull;
-//import javax.validation.constraints.Size;
+import javax.validation.constraints.Size;
 
 /*
 static class Class_Varables{
@@ -16,11 +16,11 @@ static class Class_Varables{
 public abstract class GameCharacter{
 
     @NotNull (message = "Name cannot be null")
-    //@Size(min = 4, max = 20, message = "Heroes have names with 4 - 30 characters")
+    @Size(min = 1, max = 20, message = "Heroes have names with 1 - 20 characters")
     protected String _name;
     
     @NotNull (message = "class cannot be null")
-    //@Size(min = 4, max = 20, message = "Heroes have classes with 4 - 30 characters")
+    @Size(min = 4, max = 20, message = "Heroes have classes with 4 - 20 characters")
     protected String _class;
     protected int _level;
     protected int _attack;

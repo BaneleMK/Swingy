@@ -440,12 +440,15 @@ public class GameEngine{
             Set<ConstraintViolation<Hero>> violations = Validatorclass.validator.validate(temphero);
             if (violations.size() != 0){
                 hero = false;
+                tname = null;
+                char_class = null;
             } else {
                 hero = true;
             }
 
             for (ConstraintViolation<Hero> violation : violations) {
                 gameview.consolelog(violation.getMessage());
+                gameview.consolelog("");
             }
         }
     
@@ -618,8 +621,25 @@ public class GameEngine{
                     gameGuiView.getClasslable().setText("[HERO CLASSES DON'T HAVE SPACES INSIDE AND ARE NOT BLANK]");
                 } else {
                     gameGuiView.getHeroclassDialog().setVisible(false);
-                    map.generatenewmap(new Hero(gameGuiView.getNametextfield().getText(), gameGuiView.getClasstextfield().getText()), gameGuiView);
-                    gameGuiView.setHero_present(true);
+                    Hero temphero = new Hero(gameGuiView.getNametextfield().getText(), gameGuiView.getClasstextfield().getText());
+
+                    Set<ConstraintViolation<Hero>> violations = Validatorclass.validator.validate(temphero);
+                    if (violations.size() != 0){
+                        gameGuiView.setHero_present(false);
+                        
+                        for (ConstraintViolation<Hero> violation : violations) {
+                            gameGuiView.consolelog(violation.getMessage());
+                            gameGuiView.consolelog("");
+                        }
+                        // tname = null;
+                        // char_class = null;
+                        gameGuiView.newheroname();
+                    } else {
+                        map.generatenewmap(temphero, gameGuiView);
+                        gameGuiView.setHero_present(true);    // hero = true;
+                    }
+                
+                    
                 }
             }
         });
