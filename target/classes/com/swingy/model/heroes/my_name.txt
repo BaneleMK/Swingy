@@ -1,0 +1,10 @@
+Name: my_name
+Class: carrot
+Level: 1
+XP: 0 / 1000
+Hitpoints: 40
+Attack: 5
+defense: 0
+Weapon: N/A
+Armor: N/A
+Helm: N/A

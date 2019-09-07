@@ -1,0 +1,10 @@
+Name: Shroud
+Class: Gamer
+Level: 1
+XP: 600 / 1000
+Hitpoints: 50
+Attack: 5
+defense: 3
+Weapon: N/A
+Armor: LV 1 Stark_armor + 3 DEF
+Helm: LV 1 Helm_of_Truth + 5 HP
