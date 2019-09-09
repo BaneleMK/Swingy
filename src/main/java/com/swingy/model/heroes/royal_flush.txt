@@ -1,0 +1,10 @@
+Name: royal_flush
+Class: gamer
+Level: 1
+XP: 200 / 1000
+Hitpoints: 40
+Attack: 5
+defense: 2
+Weapon: N/A
+Armor: LV 1 Armor_of_Truth + 2 DEF
+Helm: N/A

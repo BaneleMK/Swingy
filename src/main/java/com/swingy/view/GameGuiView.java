@@ -50,7 +50,7 @@ public class GameGuiView implements Game{
     JButton moveButtonW = new JButton("Move West");
     JButton moveButtonE = new JButton("Move East");
     JButton HeroButton = new JButton("Hero Stats");
-    JButton clearButton = new JButton("Clear console");
+    JButton clearButton = new JButton("Clear");
     JButton mapButton = new JButton("Map");
     JButton fightButton = new JButton("Fight");
     JButton runButton = new JButton("Run");
