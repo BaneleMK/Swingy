@@ -27,9 +27,6 @@ import com.swingy.view.GameView;
 
 import javax.management.RuntimeErrorException;
 import javax.validation.ConstraintViolation;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 /**
  * GameEngine
  */
@@ -177,10 +174,10 @@ public class GameEngine{
         int xpgained = villain.get_level() * 200;
         map.killvillain(gameview);
         villain = null;
-        if (gameGuiView == null)
-            gameview.consolelog(ANSI_YELLOW+"You won the FIGHT with "+ANSI_GREEN+hero.get_lastfighthp()+" / "+hero.get_hitpoints()+ANSI_YELLOW+" hp remaining! you have gained "+ANSI_GREEN+xpgained+ANSI_YELLOW+" XP"+ANSI_RESET);
-        else 
+        if (gameGuiView != null)
             gameview.consolelog("You won the FIGHT with "+hero.get_lastfighthp()+" / "+hero.get_hitpoints()+" hp remaining! you have gained "+xpgained+" XP");
+        else 
+            gameview.consolelog(ANSI_YELLOW+"You won the FIGHT with "+ANSI_GREEN+hero.get_lastfighthp()+" / "+hero.get_hitpoints()+ANSI_YELLOW+" hp remaining! you have gained "+ANSI_GREEN+xpgained+ANSI_YELLOW+" XP"+ANSI_RESET);
 
         if (hero.getxp(xpgained) == true){
             gameview.consolelog("YOU LEVELED UP TO LV "+hero.get_level()+"!");

@@ -1,10 +1,10 @@
 Name: kirito
 Class: solo_player
-Level: 1000000000
-XP: 0 / 1000
+Level: 1000000001
+XP: -842114173 / 309138408
 Hitpoints: 4000
 Attack: 1000
-defense: 1
+defense: -647483644
 Weapon: N/A
-Armor: N/A
+Armor: LV 1000000001 Stark_armor + -647483645 DEF
 Helm: N/A

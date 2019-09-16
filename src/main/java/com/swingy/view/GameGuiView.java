@@ -116,30 +116,37 @@ public class GameGuiView implements Game{
         else
             consolelog("Helm: N/A");
     }
-
     public void hero_stats(Hero hero){
-        consolelog("Name: "+hero.get_name()
-        +"\nClass: "+hero.get_class()
-        +"\nLevel: "+hero.get_level()
-        +"\nXP: "+hero.get_experience()+" / "+hero.get_xp_to_next_lv()
-        +"\nHitpoints: "+hero.get_hitpoints()
-        +"\nAttack: "+hero.get_attack()
-        +"\ndefense: "+hero.get_defense());
+        if (hero != null){
+            consolelog("Name: "+hero.get_name()
+            +"\nClass: "+hero.get_class()
+            +"\nLevel: "+hero.get_level()
+            +"\nXP: "+hero.get_experience()+" / "+hero.get_xp_to_next_lv()
+            +"\nHitpoints: "+hero.get_hitpoints()
+            +"\nAttack: "+hero.get_attack()
+            +"\ndefense: "+hero.get_defense());
 
-        hero_weapon(hero);
-        hero_armor(hero);
-        hero_helm(hero);
+            hero_weapon(hero);
+            hero_armor(hero);
+            hero_helm(hero);
+        } else {
+            consolelog("Info not available");
+        }
     }
 
     public void villain_stats(Villain villain){
-        consolelog("Name: "+villain.get_name()
-        +"\nClass: "+villain.get_class()
-        +"\nLevel: "+villain.get_level()
-        +"\nHitpoints: "+villain.get_hitpoints()
-        +"\nAttack: "+villain.get_attack()
-        +"\ndefense: "+villain.get_defense());
+        if (villain != null){
+            consolelog("Name: "+villain.get_name()
+            +"\nClass: "+villain.get_class()
+            +"\nLevel: "+villain.get_level()
+            +"\nHitpoints: "+villain.get_hitpoints()
+            +"\nAttack: "+villain.get_attack()
+            +"\ndefense: "+villain.get_defense());
+        } else {
+            consolelog("Info not available");
+        }
     }
-
+    
 
     public void newheroname(){
         

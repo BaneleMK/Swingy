@@ -86,4 +86,5 @@ public class GameView implements Game{
         +"\nAttack: "+villain.get_attack()
         +"\ndefense: "+villain.get_defense());
     }
+
 }
