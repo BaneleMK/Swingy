@@ -35,14 +35,11 @@ public class AppTest {
     public void makechar(){
             GameCharacter winner = new Hero("winner", "bread winner");
             assertTrue(true);
-            assertEquals(winner.get_name(), "winner");
-
-
+            assertEquals("winner", winner.get_name());
     }
 
     @Test
-    public void makearray(){
-
-            
+    public void makeNewSave(){
+    	SaveHero.openfile("yepyepyepyepnotexistent");     
     }
 }

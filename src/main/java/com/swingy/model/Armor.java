@@ -2,57 +2,60 @@ package com.swingy.model;
 
 import javax.validation.constraints.NotNull;
 
+import lombok.Data;
+
+@Data
 public class Armor implements Artifact {
     
     @NotNull
-    private String _name;
+    private String name;
 
     @NotNull
-    private int _defense;
+    private int defense;
     
-    private String _type = "Armor";
+    private final String type = "Armor";
     
     @NotNull
-    private int _level;
+    private int level;
 
     public Armor(String name, int defense, int level){
-        this._name = name;
-        this._defense = defense * (level + 1) / 2;
-        this._level = level;
+        this.name = name;
+        this.defense = defense * (level + 1) / 2;
+        this.level = level;
     }
 
     /**
      * @return the _name
      */
     public String get_name(){
-        return _name;
+        return name;
     }
 
     /**
      * @return the _level
      */
     public int get_level() {
-        return _level;
+        return level;
     }
 
     /**
      * @return the type
      */
     public String get_type() {
-        return _type;
+        return type;
     }
 
     /**
      * @return the _defense
      */
     public int get_defense() {
-        return _defense;
+        return defense;
     }
 
     /**
      * @return the _defense
      */
     public int get_stats() {
-        return _defense;
+        return defense;
     }
 }

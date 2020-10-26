@@ -13,27 +13,30 @@
 package com.swingy;
 
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SaveHero {
-    static public PrintWriter savefile;
+	private static PrintWriter savefile;
+    public static final Logger logger = Logger.getLogger(SaveHero.class.getName());
 
     SaveHero(){
         
     }
 
-    static public void openfile(String name){
+    public static void openfile(String name){
         try {
             savefile = new PrintWriter("src/main/java/com/swingy/model/heroes/"+name+".txt");
         } catch (Exception e) {
-            System.out.println("File conflict error: "+ e.getMessage());
+            logger.log(Level.WARNING, "File conflict error: {}", e.getMessage());
         }
     }
 
-    static public void closelog(){
+    public static void closelog(){
             savefile.close();
     }
 
-    static public void put(String log){
+    public static void put(String log){
         savefile.println(log); 
     }
 }

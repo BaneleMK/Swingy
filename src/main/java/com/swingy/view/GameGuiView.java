@@ -33,8 +33,9 @@ public class GameGuiView implements Game{
     private int heroes_saves = 0;
 
     // hero name and class
-    private JTextField nametextfield = new JTextField("enter hero name" ,20);
-    private JTextField classtextfield = new JTextField("enter hero class" ,20);
+    private PlaceholderTextField nametextfield = new PlaceholderTextField("enter hero name" ,20);
+    private PlaceholderTextField classtextfield = new PlaceholderTextField("enter hero class" ,20);
+    
     JMenuBar gameoptions = new JMenuBar();
     JMenu game = new JMenu("game");
     JMenuItem newgame,loadgame, savegame;
@@ -81,15 +82,15 @@ public class GameGuiView implements Game{
             for(int x = 0; x<mapsize; x++){
                 // check if a villain randomly spawns and if the max amount of mobs is not reached for the player level.
                 if (map[y][x][0] == null && map[y][x][1] == null){
-                    consolelogmap(". ");
+                    consolelogmap("[ ] ");
                 } else if (map[y][x][0] != null && map[y][x][1] != null){
-                    consolelogmap("F ");
+                    consolelogmap("[F] ");
                 } else if (map[y][x][0] != null) {
-                    consolelogmap("V ");
+                    consolelogmap("[V] ");
                 } else if (map[y][x][1] != null) {
-                    consolelogmap("H ");
+                    consolelogmap("[H] ");
                 } else {
-                    consolelogmap("# ");
+                    consolelogmap("[#] ");
                 }
             }
             consolelogmap("\n");
@@ -149,9 +150,7 @@ public class GameGuiView implements Game{
     
 
     public void newheroname(){
-        
-        // dialoge box (new hero)
-        // dialoge box layout
+        // dialogue box layout
         newherodDialog.setLayout(new FlowLayout());
         // set invisible in the beginning
         newherodDialog.setSize(480, 150);
@@ -161,16 +160,20 @@ public class GameGuiView implements Game{
         
         // adds button and textspace to dialog box
         newherodDialog.add(nametextfield);
-        newherodDialog.add(submitButtonname);
+        newherodDialog.add(submitButtonname).requestFocusInWindow();
         
-        //conform name sends info to makehero
-        nametextfield.setBounds(120, 40, 160, 20);
+        // conform name sends info to makehero
+        //nametextfield.setBounds(120, 40, 160, 20);
+        
+        // resets the placeholdername
+        nametextfield.setText(nametextfield.Placeholder);
     }
 
     public void newheroclass(){
-        // dialoge box layout
+        // dialogue box layout
         heroclassDialog.setLayout(new FlowLayout());
         // set invisible in the beginning
+        
         // dialog size
         heroclassDialog.setSize(480, 150);
         heroclassDialog.add(classlable);
@@ -178,11 +181,14 @@ public class GameGuiView implements Game{
         
         // adds button and textspace to dialog box
         heroclassDialog.add(classtextfield);
-        heroclassDialog.add(submitButtonclass);
+        heroclassDialog.add(submitButtonclass).requestFocusInWindow();
+        
+        // resets the placeholdername
+        classtextfield.setText(classtextfield.Placeholder);
     }
 
     public void loadhero(){
-        // dialoge box (load hero)
+        // dialogue box (load hero)
         // dialog size
         loadheroDialog.setSize(700, 500);
         loadheroDialog.getContentPane().add(heroeslist);
@@ -207,13 +213,11 @@ public class GameGuiView implements Game{
         }
 
         loadheroDialog.add(loadlable);
-        loadheroDialog.add(loadlable);
+        // loadheroDialog.add(loadlable);
         loadheroDialog.setLayout(new FlowLayout());
     }
 
     public void makewindow(){
-        heroclassDialog.setVisible(false);
-
         newgame = new JMenuItem("New Game");
         loadgame = new JMenuItem("Load Game");
         savegame = new JMenuItem("Save Game");
@@ -243,21 +247,9 @@ public class GameGuiView implements Game{
         guiscroll.setBounds(10, 170, 770, 550);
         guiscroll.setVisible(true);
         guiconsole.setEditable(false);
-        guiconsole.setBackground(Color.GREEN);
+        guiconsole.setBackground(Color.magenta);
         guiconsole.setVisible(true);
         frame.add(guiscroll);
-
-        /*
-        
-        // hopefully wont need a second text area
-
-        JTextArea guiconsole = new JTextArea();
-        guiconsole.setBounds(10, 10, 300, 700);
-        guiconsole.setEditable(false);
-        guiconsole.setBackground(Color.GREEN);
-        guiconsole.setVisible(true);
-        frame.add(guiconsole);*/
-
 
         // -------------- MOVEMENT BUTTONS ------------------ //
         
