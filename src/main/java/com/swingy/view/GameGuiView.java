@@ -82,7 +82,7 @@ public class GameGuiView implements Game{
             for(int x = 0; x<mapsize; x++){
                 // check if a villain randomly spawns and if the max amount of mobs is not reached for the player level.
                 if (map[y][x][0] == null && map[y][x][1] == null){
-                    consolelogmap("[ ] ");
+                    consolelogmap("[-] ");
                 } else if (map[y][x][0] != null && map[y][x][1] != null){
                     consolelogmap("[F] ");
                 } else if (map[y][x][0] != null) {
@@ -159,8 +159,8 @@ public class GameGuiView implements Game{
         // dialog box button for adding name
         
         // adds button and textspace to dialog box
+        newherodDialog.add(submitButtonname); //.requestFocusInWindow();
         newherodDialog.add(nametextfield);
-        newherodDialog.add(submitButtonname).requestFocusInWindow();
         
         // conform name sends info to makehero
         //nametextfield.setBounds(120, 40, 160, 20);
@@ -180,8 +180,8 @@ public class GameGuiView implements Game{
         // dialog box button for adding name
         
         // adds button and textspace to dialog box
+        heroclassDialog.add(submitButtonclass); //.requestFocusInWindow();
         heroclassDialog.add(classtextfield);
-        heroclassDialog.add(submitButtonclass).requestFocusInWindow();
         
         // resets the placeholdername
         classtextfield.setText(classtextfield.Placeholder);
@@ -247,7 +247,7 @@ public class GameGuiView implements Game{
         guiscroll.setBounds(10, 170, 770, 550);
         guiscroll.setVisible(true);
         guiconsole.setEditable(false);
-        guiconsole.setBackground(Color.magenta);
+        guiconsole.setBackground(Color.white);
         guiconsole.setVisible(true);
         frame.add(guiscroll);
 
